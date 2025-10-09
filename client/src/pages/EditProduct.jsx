@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { showSuccess, showError } from '../utils/toast';
+
 import {
   Box,
   Paper,
@@ -55,6 +57,7 @@ function EditProduct() {
         quantity: parseInt(formData.quantity),
         price: parseFloat(formData.price),
       });
+      showSuccess('Product updated successfully!');
       navigate('/products');
     } catch (error) {
       setError('Failed to update product');

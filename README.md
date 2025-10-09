@@ -50,7 +50,7 @@ A modern, responsive inventory management application built with React and Node.
 
 ### Setup Instructions
 
-#### Step 1: Clone the repository
+#### Clone the repository
 
 ```bash
 git clone https://github.com/yourusername/inventory-management.git
@@ -73,6 +73,27 @@ VITE_API_URL=http://localhost:5001
 
 cd server
 npm run dev
+
+POST /api/products
+{
+  "name": "Laptop",
+  "category": "Electronics",
+  "quantity": 10,
+  "price": 999.99
+}
+
+{
+  "success": true,
+  "data": {
+    "_id": "abc123",
+    "name": "Laptop",
+    "category": "Electronics",
+    "quantity": 10,
+    "price": 999.99,
+    "inStock": true,
+    "createdAt": "2024-01-01T00:00:00.000Z"
+}
+
 
 ## Project Structure
 inventory-management/
@@ -116,120 +137,110 @@ inventory-management/
 ├── .gitignore           # Git ignore file
 └── README.md           # Documentation
 
-Manual Testing Checklist
+### Manual Testing Checklist
+- [ ] Add new product
+- [ ] Edit product details
+- [ ] Delete product
+- [ ] Search functionality
+- [ ] Quantity adjustments
+- [ ] Low stock warnings
+- [ ] Out of stock emails
+- [ ] Export to CSV
+- [ ] Mobile responsiveness
 
- Add new product
- Edit product details
- Delete product
- Search functionality
- Quantity adjustments
- Low stock warnings
- Out of stock emails
- Export to CSV
- Mobile responsiveness
+## Deployment
 
-Deployment
-Frontend (Vercel/Netlify)
+### Frontend (Vercel/Netlify)
+1. Build production version: `npm run build`
+2. Deploy `dist` folder
 
-Build production version: npm run build
-Deploy dist folder
+### Backend (Heroku/Railway)
+1. Set environment variables
+2. Deploy with Git
 
-Backend (Heroku/Railway)
+## Future Enhancements
 
-Set environment variables
-Deploy with Git
+### Phase 1 - User Management
+- [ ] User authentication (JWT)
+- [ ] Role-based access control
+- [ ] User profiles
+- [ ] Activity logs
 
-Future Enhancements
-Phase 1 - User Management
+### Phase 2 - Advanced Inventory
+- [ ] Barcode/QR code scanning
+- [ ] Product images upload
+- [ ] Batch import from Excel
+- [ ] Category management
+- [ ] Product variants (size, color)
 
- User authentication (JWT)
- Role-based access control
- User profiles
- Activity logs
+### Phase 3 - Business Intelligence
+- [ ] Advanced analytics dashboard
+- [ ] Sales forecasting
+- [ ] Inventory history tracking
+- [ ] Price history charts
+- [ ] Profit margin analysis
 
-Phase 2 - Advanced Inventory
+### Phase 4 - Supply Chain
+- [ ] Supplier management
+- [ ] Purchase order system
+- [ ] Automated reordering
+- [ ] Multi-warehouse support
+- [ ] Shipment tracking
 
- Barcode/QR code scanning
- Product images upload
- Batch import from Excel
- Category management
- Product variants (size, color)
+### Phase 5 - Additional Features
+- [ ] Mobile app (React Native)
+- [ ] Dark mode theme
+- [ ] Multi-language support
+- [ ] Backup and restore
+- [ ] Integration with accounting software
+- [ ] Customer management
+- [ ] Invoice generation
+- [ ] Reports generation (PDF)
 
-Phase 3 - Business Intelligence
+## Troubleshooting
 
- Advanced analytics dashboard
- Sales forecasting
- Inventory history tracking
- Price history charts
- Profit margin analysis
+### Common Issues
 
-Phase 4 - Supply Chain
+1. **MongoDB Connection Error**
+   - Check connection string in `.env`
+   - Verify MongoDB service is running
+   - Check network connectivity
 
- Supplier management
- Purchase order system
- Automated reordering
- Multi-warehouse support
- Shipment tracking
+2. **Port Already in Use**
+   - Change port in `.env` file
+   - Kill process using the port
 
-Phase 5 - Additional Features
+3. **Email Not Sending**
+   - Verify EmailJS credentials
+   - Check spam folder
+   - Enable less secure app access (Gmail)
 
- Mobile app (React Native)
- Dark mode theme
- Multi-language support
- Backup and restore
- Integration with accounting software
- Customer management
- Invoice generation
- Reports generation (PDF)
+4. **CORS Error**
+   - Verify frontend URL in server CORS settings
+   - Check API URL in frontend `.env`
 
-Troubleshooting
-Common Issues
+## Contributing
 
-MongoDB Connection Error
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
 
-Check connection string in .env
-Verify MongoDB service is running
-Check network connectivity
+## License
 
-
-Port Already in Use
-
-Change port in .env file
-Kill process using the port
-
-
-Email Not Sending
-
-Verify EmailJS credentials
-Check spam folder
-Enable less secure app access (Gmail)
-
-
-CORS Error
-
-Verify frontend URL in server CORS settings
-Check API URL in frontend .env
-
-
-
-Contributing
-
-Fork the repository
-Create feature branch (git checkout -b feature/AmazingFeature)
-Commit changes (git commit -m 'Add some AmazingFeature')
-Push to branch (git push origin feature/AmazingFeature)
-Open Pull Request
-
-License
 This project is licensed under the MIT License - see the LICENSE file for details.
-Contact
-Your Name - your.email@example.com
-Project Link: https://github.com/yourusername/inventory-management
-Acknowledgments
 
-Material-UI - React component library
-Recharts - Data visualization
-EmailJS - Email service
-MongoDB Atlas - Database hosting
-Vite - Build tool
-```
+## Contact
+
+Your Name - [your.email@example.com](mailto:your.email@example.com)
+
+Project Link: [https://github.com/yourusername/inventory-management](https://github.com/yourusername/inventory-management)
+
+## Acknowledgments
+
+- [Material-UI](https://mui.com/) - React component library
+- [Recharts](https://recharts.org/) - Data visualization
+- [EmailJS](https://www.emailjs.com/) - Email service
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Database hosting
+- [Vite](https://vitejs.dev/) - Build tool
