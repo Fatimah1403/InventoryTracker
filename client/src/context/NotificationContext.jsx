@@ -1,15 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-// to create a global storage for notification
+import React, { createContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 const NotificationContext = createContext();
 
-// Custom hook to use the NotificationContext
 export const useNotifications = () => {
-    const context = useContext(NotificationContext);
-    if (!context) {
-        throw new Error('useNotification must be used within a NotificationProvider');
-    }
-    return context;
+  const context = useContext(NotificationContext);
+  if (!context) {
+      throw new Error('useNotification must be used within a NotificationProvider');
+  }
+  return context;
 };
 export function NotificationProvider({ children }) {
     const [notifications, setNotifications] = useState(() => {
@@ -18,28 +16,28 @@ export function NotificationProvider({ children }) {
         return saved ? JSON.parse(saved) : [];
     })
 
-    // Count of unread notifications (for the badge)
+   
   const [unreadCount, setUnreadCount] = useState(0);
 
    // Save to localStorage whenever notifications change
    useEffect(() => {
     localStorage.setItem('notifications', JSON.stringify(notifications));
-    // Update unread count
+    // Update unread cout
     const unread = notifications.filter(n => !n.read).length;
     setUnreadCount(unread);
   }, [notifications]);
 
-  // Function to add a new notification
+
   const addNotification = (message, type = 'info') => {
     const newNotification = {
-      id: Date.now(), // Unique ID
+      id: Date.now(), 
       message,
-      type, // 'success', 'warning', 'error', 'info'
+      type, 
       timestamp: new Date().toISOString(),
-      read: false, // Starts as unread
+      read: false
     };
     
-    // Add to beginning of array (newest first)
+   
     setNotifications(prev => [newNotification, ...prev]);
   };
   // Mark one notification as read
@@ -47,8 +45,8 @@ export function NotificationProvider({ children }) {
     setNotifications(prev =>
       prev.map(notif => 
         notif.id === id 
-          ? { ...notif, read: true } // Mark this one as read
-          : notif // Leave others unchanged
+          ? { ...notif, read: true } 
+          : notif 
       )
     );
   };

@@ -8,7 +8,7 @@ import {
   LinearProgress,
 } from '@mui/material';
 
-function TopProducts({ products }) {
+function TopProducts() {
   // For now, using dummy sales data
   const topProducts = [
     { name: 'California', sales: 87, percentage: 87 },

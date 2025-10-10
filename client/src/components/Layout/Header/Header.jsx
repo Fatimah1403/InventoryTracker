@@ -67,7 +67,7 @@ import {
       },
     },
   }));
-function Header({ onMenuClick, drawerWidth }) {
+function Header({ onMenuClick }) {
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
     const [anchorEl, setAnchorEl] = useState(null);
 

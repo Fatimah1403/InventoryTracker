@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { showSuccess, showError } from '../utils/toast';
+import { showSuccess } from '../utils/toast';
 
 import {
   Box,
@@ -44,7 +44,7 @@ function EditProduct() {
       });
       setLoading(false);
     } catch (error) {
-      setError('Failed to load product');
+      setError('Failed to load product', error);
       setLoading(false);
     }
   };
@@ -60,7 +60,7 @@ function EditProduct() {
       showSuccess('Product updated successfully!');
       navigate('/products');
     } catch (error) {
-      setError('Failed to update product');
+      setError('Failed to update product', error);
     }
   };
 

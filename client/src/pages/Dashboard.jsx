@@ -25,6 +25,8 @@ import StatCard from '../components/Dashboard/StatCard';
 import InventoryChart from '../components/Dashboard/InventoryChart';
 import TopProducts from '../components/Dashboard/TopProducts';
 import ExpenseChart from '../components/Dashboard/ExpenseChart';
+import { showError } from '../utils/toast';
+
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -65,7 +67,7 @@ function Dashboard() {
 
       const statistics = {
         totalProducts: productData.length,
-        totalOrders: 2859,
+        totalOrders: 200,
         totalStock: productData.reduce((sum, product) => sum + product.quantity, 0),
         outOfStock: productData.filter(product => product.quantity === 0).length
       };
@@ -74,13 +76,11 @@ function Dashboard() {
       setProducts(productData);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      showError("Error fetching dashboard data:", error);
       setLoading(false);
     }
   };
   const totalValue = products.reduce((sum, p) => sum + (p.quantity * p.price), 0);
-
-
 
   const statCards = [
     {
@@ -161,7 +161,7 @@ function Dashboard() {
                     583K
                   </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary" align="center">
+                <Typography variant="h6" color="text.secondary" align="center">
                   Total Customers
                 </Typography>
               </Paper>
@@ -188,9 +188,8 @@ function Dashboard() {
         </Grid>
       </Grid>
 
-      {/* Additional Dashboard Widgets Row */}
       <Grid container spacing={3} sx={{ mt: 2 }}>
-        {/* Currency Exchange Rates */}
+        {/* Currency Exchange Rates API*/}
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 2, height: '300px' }}>
             <Typography variant="h6" gutterBottom>

@@ -41,14 +41,14 @@ function Sidebar({ mobileOpen, handleDrawerToggle, drawerWidth }) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [user, setUser] = useState(() => {
+    const [user] = useState(() => {
         const savedUser = localStorage.getItem('user');
         return savedUser ? JSON.parse(savedUser) : {
           name: 'Admin User',
           email: 'fattyhassan@gmail.com',
           initials: 'FK'
         };
-      });
+    });
       const handleLogout = () => {
         if (window.confirm('Return to dashboard?')) {
           window.location.href = '/'; 
@@ -57,7 +57,6 @@ function Sidebar({ mobileOpen, handleDrawerToggle, drawerWidth }) {
 
     const drawer = (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            {/* Top section with user profile and menu */}
             <Box sx={{ flexGrow: 1 }}>
                 {/* User profile Section */}
                 <Box
@@ -69,7 +68,6 @@ function Sidebar({ mobileOpen, handleDrawerToggle, drawerWidth }) {
                         backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     }}
                 >
-                    {/* Keep your existing avatar and user info code here */}
                     <Avatar
                         sx={{
                             width: 80,
@@ -132,7 +130,7 @@ function Sidebar({ mobileOpen, handleDrawerToggle, drawerWidth }) {
                 </List>
             </Box>
     
-            {/* Logout Button - This will stick to the bottom */}
+            {/* Logout Button */}
             <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}>
                 <Button
                     fullWidth
