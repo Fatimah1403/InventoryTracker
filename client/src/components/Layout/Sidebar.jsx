@@ -75,7 +75,7 @@ function Sidebar({ mobileOpen, handleDrawerToggle, drawerWidth }) {
                             mb: 2,
                             border: '3px solid rgba(255, 255, 255, 0.3)',
                         }}
-                        src="/avatar-placeholder.png"
+                        src="/avatar-placeholder.jpeg"
                         >
                         {user.initials}
                     </Avatar>
