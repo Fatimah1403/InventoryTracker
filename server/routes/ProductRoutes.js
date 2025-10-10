@@ -1,4 +1,3 @@
-
 import express from "express";
 import {
     createProduct,
@@ -13,16 +12,16 @@ const router = express.Router();
 
 // Routes for /api/products
 router.route("/")
-    .get(getProducts)      // GET all products
-    .post(createProduct);  // CREATE new product
+    .get(getProducts)      
+    .post(createProduct);  
 
 // Routes for /api/products/:id
 router.route("/:id")
-    .get(getProduct)       // GET single product by ID
-    .put(updateProduct)    // UPDATE product by ID
-    .delete(deleteProduct); // DELETE product by ID
+    .get(getProduct)       
+    .put(updateProduct)    
+    .delete(deleteProduct); 
 
 // Special route for quantity updates
-router.patch("/:id/quantity", updateQuantity); // UPDATE product quantity
+router.patch("/:id/quantity", updateQuantity); 
 
 export default router;

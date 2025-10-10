@@ -1,7 +1,4 @@
-
-
 import mongoose from "mongoose";
-// Define the schema for the products
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -30,9 +27,9 @@ const productSchema = new mongoose.Schema({
     },
 },
 {
-    timestamps: true, // Adds createdAt & updatedAt fields
+    timestamps: true, 
 }
 );
-// Create and export Model
+
 const Product = mongoose.model("Product", productSchema);
 export default Product;

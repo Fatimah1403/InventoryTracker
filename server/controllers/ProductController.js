@@ -15,7 +15,7 @@ export const createProduct = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             success: false,
-            // message: "Invalid data",
+           
             message: error.message
         })
     }
@@ -86,7 +86,6 @@ export const updateProduct = async (req, res) => {
         }
         // Check if quantity is 0 and send email notification
         if (product.quantity === 0) {
-            // We'll add email functionality later
             console.log("⚠️ Product out of stock:", product.name);
             product.inStock = false;
             await product.save();
@@ -159,14 +158,12 @@ export const updateQuantity = async (req, res) => {
         // Send email if out of stock
         if (quantity === 0) {
             console.log("📧 Sending out of stock email for:", product.name);
-            // Emali logic will be added later
         }
         res.status(200).json({
             success: true,
             data: product
         });
 
-        
     } catch (error) {
         res.status(500).json({
             success: false,
