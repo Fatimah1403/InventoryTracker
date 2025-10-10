@@ -13,7 +13,11 @@ const app = express();
 
 // CORS configuration - MORE DETAILED
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://localhost:5000'], 
+  origin: [
+    'http://localhost:5173', 
+    'http://localhost:5000',
+    'https://inventory-tracker-frontend-ten.vercel.app'
+  ], 
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
@@ -56,7 +60,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server
+
 const PORT = process.env.PORT || 5001;
 const startServer = async () => {
   try {
