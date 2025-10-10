@@ -148,15 +148,16 @@ inventory-management/
 - [ ] Export to CSV
 - [ ] Mobile responsiveness
 
-## Deployment
+## 🌐 Live Demo
+Frontend: https://inventory-tracker-frontend-ten.vercel.app  
+Backend API: https://inventory-tracker-kuou.onrender.com  
 
-### Frontend (Vercel/Netlify)
-1. Build production version: `npm run build`
-2. Deploy `dist` folder
 
-### Backend (Heroku/Railway)
-1. Set environment variables
-2. Deploy with Git
+## ⚙️ Deployment
+- Frontend deployed with **Vercel**
+- Backend deployed with **Render**
+- CORS enabled between both environments
+- EmailJS integrated for automated alerts
 
 ## Future Enhancements
 
