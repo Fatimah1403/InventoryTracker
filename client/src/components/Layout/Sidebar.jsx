@@ -11,6 +11,7 @@ import {
     Box,
     Typography,
     Divider,
+    Button,
   } from '@mui/material';
 
   import {
@@ -48,100 +49,113 @@ function Sidebar({ mobileOpen, handleDrawerToggle, drawerWidth }) {
           initials: 'FK'
         };
       });
+      const handleLogout = () => {
+        if (window.confirm('Return to dashboard?')) {
+          window.location.href = '/'; 
+        }
+    };
 
     const drawer = (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            {/* User profile Section */}
-            <Box
-            sx={{
-                p: 3,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            }}
-            >
-                <Avatar
+            {/* Top section with user profile and menu */}
+            <Box sx={{ flexGrow: 1 }}>
+                {/* User profile Section */}
+                <Box
                     sx={{
-                        width: 80,
-                        height: 80,
-                        mb: 2,
-                        border: '3px solid rgba(255, 255, 255, 0.3)',
+                        p: 3,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     }}
-                    src="/avatar-placeholder.png"
-                    >
-                    {user.initials}
-                </Avatar>
-                <Typography variant="h6" sx={{ color: 'white', fontWeight: 500 }}>
-                    {user.name}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                    {user.email}
-                </Typography>
-
-            </Box>
-            <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
-            {/* Navigation Menu */}
-            <List sx={{  flexGrow:1, px: 1, py: 2 }}>
-                {menuItems.map((item) => (
-                    <ListItem key={item.text} disablePadding sx={{  mb: 0.5 }}>
-                        <ListItemButton
-                            onClick={() => navigate(item.path)}
-                            selected={location.pathname === item.path}
-                            sx={{
-                            borderRadius: '8px',
-                            '&.Mui-selected': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                                '&:hover': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                                },
-                            },
-                            '&:hover': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                            },
-                            }}
-                        >
-                            <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText 
-                                primary={item.text}  
-                                slotProps={{  
-                                    fontSize: '0.95rem',
-                                    fontWeight: location.pathname === item.path ? 600 : 400,
-                                    color: '#fff',
-                                }}
-                            />
-
-                        </ListItemButton>
-
-                    </ListItem>
-
-                ))}
-
-            </List>
-            {/* Logout Button */}
-            <Box sx={{ p: 2 }}>
-                <ListItemButton
-                sx={{
-                    borderRadius: '15px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    },
-                }}
                 >
-                <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
-                    <LogoutIcon />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-                </ListItemButton>
+                    {/* Keep your existing avatar and user info code here */}
+                    <Avatar
+                        sx={{
+                            width: 80,
+                            height: 80,
+                            mb: 2,
+                            border: '3px solid rgba(255, 255, 255, 0.3)',
+                        }}
+                        src="/avatar-placeholder.png"
+                        >
+                        {user.initials}
+                    </Avatar>
+                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 500 }}>
+                        {user.name}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                        {user.email}
+                    </Typography>
+                </Box>
+                
+                <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
+                
+                {/* Navigation Menu */}
+                <List sx={{ px: 1, py: 2 }}>
+                    {menuItems.map((item) => (
+                        <ListItem key={item.text} disablePadding sx={{  mb: 0.5 }}>
+                            <ListItemButton
+                                onClick={() => navigate(item.path)}
+                                selected={location.pathname === item.path}
+                                sx={{
+                                borderRadius: '8px',
+                                '&.Mui-selected': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                                    '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                                    },
+                                },
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                },
+                                }}
+                            >
+                                <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
+                                    {item.icon}
+                                </ListItemIcon>
+                                <ListItemText 
+                                    primary={item.text}  
+                                    slotProps={{  
+                                        fontSize: '0.95rem',
+                                        fontWeight: location.pathname === item.path ? 600 : 400,
+                                        color: '#fff',
+                                    }}
+                                />
+
+                            </ListItemButton>
+
+                        </ListItem>
+
+                    ))}
+
+                </List>
             </Box>
-
+    
+            {/* Logout Button - This will stick to the bottom */}
+            <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}>
+                <Button
+                    fullWidth
+                    variant="text"
+                    startIcon={<LogoutIcon />}
+                    onClick={handleLogout}
+                    sx={{
+                        color: 'white',
+                        justifyContent: 'flex-start',
+                        textTransform: 'none',
+                        fontSize: '0.95rem',
+                        '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        },
+                    }}
+                >
+                    Logout
+                </Button>
+            </Box>
         </Box>
-
-
     );
+
+    
     return (
         <>
             {/* Mobile Drawer */}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, CssBaseline, Toolbar } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import Header from '../Header/Header';
+import Header from "./Header/Header";
 
 const drawerWidth = 240;
 

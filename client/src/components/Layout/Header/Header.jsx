@@ -1,7 +1,7 @@
 import React from 'react';
-import { useNotifications } from '../../context/NotificationContext';
+import { useNotifications } from "../../../context/NotificationContext";
+import { showSuccess } from "../../../utils/toast";
 import { useState } from 'react';
-import { showSuccess } from '../../utils/toast';
 import ThemeToggle from "./ThemeToggle";
 
 

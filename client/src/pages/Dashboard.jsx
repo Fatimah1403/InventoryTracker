@@ -18,6 +18,7 @@ import {
   Add as AddIcon,
   Edit as EditIcon,
   Warning as WarningIcon,
+  AttachMoney as AttachMoneyIcon,
 } from '@mui/icons-material';
 import { productAPI } from '../services/api';
 import StatCard from '../components/Dashboard/StatCard';
@@ -28,6 +29,7 @@ import ExpenseChart from '../components/Dashboard/ExpenseChart';
 function Dashboard() {
   const [stats, setStats] = useState({
     totalProducts: 0,
+    totalValue: 0,
     totalOrders: 0,
     totalStock: 0,
     outOfStock: 0,
@@ -76,8 +78,19 @@ function Dashboard() {
       setLoading(false);
     }
   };
+  const totalValue = products.reduce((sum, p) => sum + (p.quantity * p.price), 0);
+
+
 
   const statCards = [
+    {
+      title: 'Total Value',
+      value: `$${totalValue.toLocaleString()}`,
+      icon: <AttachMoneyIcon />,
+      color: '#9C27B0',
+      bgColor: '#F3E5F5',
+    },
+
     {
       title: 'Total Products',
       value: stats.totalProducts,

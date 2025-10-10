@@ -29,6 +29,7 @@ import {
   Search as SearchIcon,
   Add as AddIcon,
   Remove as RemoveIcon,
+  Print as PrintIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { productAPI } from '../services/api';
@@ -121,12 +122,37 @@ function Products() {
       
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-      };
+    };
     
       const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+    const exportToCSV = () => {
+        const csvContent = [
+            ['Product Name', 'Category', 'Quantity', 'Price', 'Status'],
+            ...filteredProducts.map(p => [
+                p.name,
+                p.category,
+                p.quantity,
+                p.price,
+                p.quantity > 0 ? 'In Stock' : 'Out of Stock'
+            ])
+
+        ].map(row => row.join(',')).join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `inventory-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+    }
+    const handlePrint = () => {
+        document.title = "Product Inventory Report";
+        window.print();
+    };
+    document.body.setAttribute('data-date', new Date().toLocaleDateString());
     return (
         <Box
             component={motion.div}
@@ -137,7 +163,7 @@ function Products() {
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h4">Products Inventory</Typography>
-                <Button
+                {/* <Button
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={() => navigate('/add-product')}
@@ -145,6 +171,40 @@ function Products() {
                     >
                     Add Product
                 </Button>
+                <Button
+                    variant="outlined"
+                    onClick={exportToCSV}
+                    sx={{ mr: 2 }}
+                >
+                    Export CSV
+                </Button> */}
+                    <Button
+                        variant="outlined"
+                        onClick={exportToCSV}
+                        startIcon={<PrintIcon />} 
+                        className="no-print" 
+                        >
+                        Export CSV
+                        </Button>
+
+                        <Button
+                        variant="outlined"
+                        onClick={handlePrint}
+                        startIcon={<PrintIcon />}
+                        className="no-print" 
+                        >
+                        Print
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            onClick={() => navigate('/add-product')}
+                            sx={{ backgroundColor: '#4A6B7C' }}
+                            className="no-print" 
+                            >
+                            Add Product
+                    </Button>
             </Box>
             {/* Search Bar */}
             <Paper sx={{ p: 2, mb: 3 }}>
