@@ -20,7 +20,7 @@ A modern, responsive inventory management application built with React and Node.
 - 📱 **Responsive Design**: Works on desktop, tablet, and mobile
 - 🔔 **Notification Center**: Track all system activities
 - 💱 **Currency Exchange Rates**: Live rates for international pricing
-- 🎨 **Material-UI Design**: Clean, modern interface
+- 🎨 **Material-UI Design**: Clean, modern interfaces
 
 ## Tech Stack
 
@@ -98,7 +98,7 @@ POST /api/products
 ## Project Structure
 inventory-management/
 ├── client/                  # React frontend
-│   ├── public/             # Static files
+│   ├── public/image            # Static files
 │   ├── src/
 │   │   ├── components/     # Reusable components
 │   │   │   ├── Dashboard/  # Dashboard components
@@ -149,8 +149,8 @@ inventory-management/
 - [ ] Mobile responsiveness
 
 ## 🌐 Live Demo
-Frontend: https://inventory-tracker-frontend-ten.vercel.app  
-Backend API: https://inventory-tracker-kuou.onrender.com  
+Frontend: https://inventory-tracker-frontend-ten.vercel.app
+Backend API: https://inventory-tracker-kuou.onrender.com
 
 
 ## ⚙️ Deployment
@@ -245,3 +245,4 @@ Project Link: [https://github.com/yourusername/inventory-management](https://git
 - [EmailJS](https://www.emailjs.com/) - Email service
 - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Database hosting
 - [Vite](https://vitejs.dev/) - Build tool
+```
