@@ -13,7 +13,6 @@ export function ThemeModeProvider({ children }) {
     setMode((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  // Memoized MUI theme for performance
   const theme = useMemo(
     () =>
       createTheme({
