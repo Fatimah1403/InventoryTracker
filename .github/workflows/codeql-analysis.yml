@@ -1,0 +1,80 @@
+name: "CodeQL Security Analysis"
+
+# When should this workflow run?
+on:
+  # Run when code is pushed to these branches
+  push:
+    branches: [ main, sec764-w1 ]
+  
+  # Run when a pull request targets these branches
+  pull_request:
+    branches: [ main ]
+  
+  # Run on a schedule (every Monday at 2 AM)
+  schedule:
+    - cron: '0 2 * * 1'
+  
+  # Allow manual triggering from Actions tab
+  workflow_dispatch:
+
+# What should this workflow do?
+jobs:
+  # Job 1: Analyze the code
+  analyze:
+    # Human-friendly name for this job
+    name: Analyze Code Security
+    
+    # What type of computer to run on
+    runs-on: ubuntu-latest
+    
+    # Permissions this job needs
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    # Matrix strategy - run multiple versions in parallel
+    strategy:
+      fail-fast: false  
+      matrix:
+        language: [ 'javascript' ]  
+        
+    # The actual steps to perform
+    steps:
+      # Step 1: Download your code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Step 2: Set up CodeQL tools
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+          # This installs CodeQL and prepares it to scan JavaScript
+          
+      # Step 3: Let CodeQL analyze your code
+      # For JavaScript, CodeQL automatically builds/analyzes
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+      
+      # Step 4: Run security queries
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{matrix.language}}"
+          # This runs hundreds of security checks on your code
+          
+      # Step 5: Summary 
+      - name: Create Summary
+        if: always()
+        run: |
+          echo "## 🔍 CodeQL Security Scan Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### What CodeQL Checked:" >> $GITHUB_STEP_SUMMARY
+          echo "- SQL/NoSQL Injection vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          echo "- Cross-Site Scripting (XSS) risks" >> $GITHUB_STEP_SUMMARY
+          echo "- Path traversal vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          echo "- Insecure data handling" >> $GITHUB_STEP_SUMMARY
+          echo "- Hard-coded credentials" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the Security tab for detailed results!" >> $GITHUB_STEP_SUMMARY

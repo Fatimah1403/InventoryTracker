@@ -1,0 +1,156 @@
+name: "Dependency and Security Check"
+
+on:
+  push:
+    branches: [ main, sec764-w1 ]
+  pull_request:
+    branches: [ main ]
+  # Run weekly on Sunday at midnight
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  # Job 1: Check npm dependencies
+  npm-audit:
+    name: NPM Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Get the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'  # Cache dependencies for speed
+      
+      # Check backend dependencies
+      - name: Audit Backend Dependencies
+        working-directory: ./server
+        run: |
+          echo "## 📦 Backend Dependency Audit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Install dependencies
+          npm ci
+          
+          # Run audit and capture output
+          echo "### Vulnerability Summary:" >> $GITHUB_STEP_SUMMARY
+          npm audit --json | jq '.metadata.vulnerabilities' >> $GITHUB_STEP_SUMMARY || echo "No JSON output" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Detailed Report:" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          npm audit >> $GITHUB_STEP_SUMMARY 2>&1 || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true  
+      
+      # Check frontend dependencies
+      - name: Audit Frontend Dependencies
+        working-directory: ./client
+        run: |
+          echo "## 🎨 Frontend Dependency Audit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          npm ci
+          
+          echo "### Vulnerability Summary:" >> $GITHUB_STEP_SUMMARY
+          npm audit --json | jq '.metadata.vulnerabilities' >> $GITHUB_STEP_SUMMARY || echo "No JSON output" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Detailed Report:" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          npm audit >> $GITHUB_STEP_SUMMARY 2>&1 || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+
+  # Job 2: Check for secrets in code
+  secret-scanning:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+        continue-on-error: true
+      
+      - name: Check for common secret patterns
+        run: |
+          echo "## 🔐 Secret Pattern Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "Checking for potential secrets..." >> $GITHUB_STEP_SUMMARY
+          
+          # Check for common secret patterns
+          patterns=(
+            "password.*=.*['\"].*['\"]"
+            "api[_-]?key.*=.*['\"].*['\"]"
+            "secret.*=.*['\"].*['\"]"
+            "token.*=.*['\"].*['\"]"
+            "mongodb\+srv://"
+          )
+          
+          found_issues=false
+          
+          for pattern in "${patterns[@]}"; do
+            echo "Checking for pattern: $pattern" >> $GITHUB_STEP_SUMMARY
+            if grep -r -i "$pattern" --include="*.js" --include="*.jsx" --include="*.json" --exclude-dir=node_modules . ; then
+              echo "⚠️ Potential secret found with pattern: $pattern" >> $GITHUB_STEP_SUMMARY
+              found_issues=true
+            fi
+          done
+          
+          if [ "$found_issues" = false ]; then
+            echo "✅ No obvious secrets found in code" >> $GITHUB_STEP_SUMMARY
+          fi
+        continue-on-error: true
+
+  # Job 3: License and compliance check
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Check licenses
+        run: |
+          echo "## 📜 License Compliance Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Install license checker
+          npm install -g license-checker
+          
+          echo "### Backend Licenses:" >> $GITHUB_STEP_SUMMARY
+          cd server
+          npm ci
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          npx license-checker --summary >> $GITHUB_STEP_SUMMARY 2>&1 || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Frontend Licenses:" >> $GITHUB_STEP_SUMMARY
+          cd ../client
+          npm ci
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          npx license-checker --summary >> $GITHUB_STEP_SUMMARY 2>&1 || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true

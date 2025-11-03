@@ -1,0 +1,150 @@
+# Workflow name
+name: "Trivy Container Security"
+
+# When to run
+on:
+  # Run on push to your branches
+  push:
+    branches: [ main, sec764-w1 ]
+  
+  # Run on pull requests
+  pull_request:
+    branches: [ main ]
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+# Environment variables used across all jobs
+env:
+  REGISTRY: ghcr.io  # GitHub Container Registry
+  IMAGE_NAME: ${{ github.repository }}  
+
+jobs:
+  # Job 1: Scan Backend Container
+  scan-backend:
+    name: Scan Backend Container
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Get the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # Step 2: Set up Docker Buildx (for better builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        # Buildx is Docker's advanced builder
+      
+      # Step 3: Create .env file for build
+      # We need this because Docker build needs env vars
+      - name: Create backend .env for build
+        run: |
+          echo "Creating temporary .env for build..."
+          cat > server/.env << EOF
+          PORT=5001
+          MONGO_URI=mongodb://localhost:27017/test
+          NODE_ENV=development
+          EOF
+          # This creates a dummy .env just for building
+      
+      # Step 4: Build the backend Docker image
+      - name: Build Backend Docker Image
+        run: |
+          echo "🔨 Building backend Docker image..."
+          docker build -t inventory-backend:${{ github.sha }} ./server
+          echo "✅ Backend image built successfully"
+          # github.sha is the commit ID - unique identifier
+      
+      # Step 5: Run Trivy scan on the image
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'inventory-backend:${{ github.sha }}'
+          format: 'sarif'  # Security format GitHub understands
+          output: 'trivy-backend-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'  # What to report
+          # This scans for vulnerable packages in your container
+      
+      # Step 6: Upload results to GitHub Security
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()  # Run even if scan finds issues
+        with:
+          sarif_file: 'trivy-backend-results.sarif'
+          category: 'trivy-backend'
+      
+      # Step 7: Create readable summary
+      - name: Create Scan Summary
+        if: always()
+        run: |
+          echo "## 🐳 Backend Container Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Run Trivy again for table format (human-readable)
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasecurity/trivy image --format table --severity HIGH,CRITICAL \
+            inventory-backend:${{ github.sha }} >> $GITHUB_STEP_SUMMARY 2>&1 || true
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### What Trivy Checked:" >> $GITHUB_STEP_SUMMARY
+          echo "- OS packages (Alpine Linux)" >> $GITHUB_STEP_SUMMARY
+          echo "- Node.js vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          echo "- npm package vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          echo "- Dockerfile misconfigurations" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Scan Frontend Container
+  scan-frontend:
+    name: Scan Frontend Container
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Get the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      # Step 3: Create .env file for frontend build
+      - name: Create frontend .env for build
+        run: |
+          echo "Creating temporary .env for build..."
+          cat > client/.env << EOF
+          VITE_API_URL=http://localhost:5001
+          EOF
+      
+      # Step 4: Build the frontend Docker image
+      - name: Build Frontend Docker Image
+        run: |
+          echo "🔨 Building frontend Docker image..."
+          docker build -t inventory-frontend:${{ github.sha }} ./client
+          echo "✅ Frontend image built successfully"
+      
+      # Step 5: Run Trivy scan
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'inventory-frontend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-frontend-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+      
+      # Step 6: Upload results
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-frontend-results.sarif'
+          category: 'trivy-frontend'
+      
+      # Step 7: Create summary
+      - name: Create Scan Summary
+        if: always()
+        run: |
+          echo "## 🎨 Frontend Container Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasecurity/trivy image --format table --severity HIGH,CRITICAL \
+            inventory-frontend:${{ github.sha }} >> $GITHUB_STEP_SUMMARY 2>&1 || true
