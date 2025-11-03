@@ -352,4 +352,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*This project is part of CS763 Secure Software Development coursework, demonstrating the evolution from functional to secure software.*
