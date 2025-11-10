@@ -20,7 +20,6 @@ const categories = ['Electronics', 'Furniture', 'Clothing', 'Food', 'Books'];
 function AddProduct() {
   const navigate = useNavigate();
 
-  // Form State
   const [formData, setFormData] = useState({
     name: '',
     category: '',

@@ -1,248 +1,354 @@
-# Inventory Management System
+# Inventory Tracker - Secure Development Project
 
-A modern, responsive inventory management application built with React and Node.js.
+A full-stack inventory management system with comprehensive security analysis for  Secure Software Developments .
 
-## Features
+[![Security Scan](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/codeql-analysis.yml)
+[![Container Security](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/trivy-security.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/trivy-security.yml)
+[![Dependency Check](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/dependency-check.yml)
 
-### Core Functionality
+## 🚀 Live Demo
 
-- ✅ **Product Management**: Add, edit, delete, and track products
-- ✅ **Real-time Inventory Tracking**: Monitor stock levels with visual indicators
-- ✅ **Smart Notifications**: Get alerts for low stock and out-of-stock items
-- ✅ **Email Alerts**: Automatic email notifications when products go out of stock
-- ✅ **Search & Filter**: Quickly find products by name or category
-- ✅ **Bulk Operations**: Quick restock with +10 button
-- ✅ **Data Export**: Export inventory data to CSV format
+- **Frontend**: [https://inventory-tracker-frontend-ten.vercel.app](https://inventory-tracker-frontend-ten.vercel.app)
+- **Backend API**: [https://inventory-tracker-kuou.onrender.com](https://inventory-tracker-kuou.onrender.com)
+- **Documentation**: [CS763 Security Analysis](./CS763_DOCS/)
 
-### User Interface
+## 📋 Project Overview
 
-- 📊 **Interactive Dashboard**: Real-time statistics and charts
-- 📱 **Responsive Design**: Works on desktop, tablet, and mobile
-- 🔔 **Notification Center**: Track all system activities
-- 💱 **Currency Exchange Rates**: Live rates for international pricing
-- 🎨 **Material-UI Design**: Clean, modern interfaces
+This inventory management system was developed as a functional web application and is being enhanced with comprehensive security features as part of CS763 coursework. The project demonstrates the transition from a feature-complete but security-vulnerable application to a properly secured system.
 
-## Tech Stack
+### Current Status
+- ✅ Full CRUD functionality for inventory management
+- ✅ Real-time stock tracking and notifications
+- ✅ Containerized with Docker
+- ✅ Automated security scanning with GitHub Actions
+- ⚠️ Authentication system pending (Assignment 3)
+- ⚠️ Security vulnerabilities identified for analysis
+
+## 🛠️ Tech Stack
 
 ### Frontend
-
-- React.js (Vite)
-- Material-UI
-- React Router v6
-- Recharts (Data visualization)
-- React Hot Toast
-- EmailJS
+- **Framework**: React 18 with Vite
+- **UI Library**: Material-UI v5
+- **State Management**: React Context API
+- **Routing**: React Router v6
+- **Charts**: Recharts
+- **Notifications**: React Hot Toast, EmailJS
 
 ### Backend
+- **Runtime**: Node.js v18 LTS
+- **Framework**: Express.js 4.x
+- **Database**: MongoDB Atlas (Cloud)
+- **ODM**: Mongoose 7.x
+- **Environment**: dotenv
 
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- Nodemailer
+### DevOps & Security
+- **Containerization**: Docker & Docker Compose
+- **CI/CD**: GitHub Actions
+- **Security Scanning**: CodeQL, Trivy, npm audit
+- **Deployment**: Vercel (Frontend), Render (Backend)
 
-## Installation
+## 🔧 Installation
 
 ### Prerequisites
-
-- Node.js (v16 or higher)
-- MongoDB (local or Atlas)
+- Node.js v16+ (v18 recommended)
+- Docker Desktop (for containerized deployment)
 - Git
+- MongoDB Atlas account (or local MongoDB)
 
-### Setup Instructions
+### Quick Start
 
-#### Clone the repository
-
+1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/inventory-management.git
-cd inventory-management
+git clone https://github.com/Fatimah1403/InventoryTracker.git
+cd InventoryTracker
+git checkout sec764-w1  # Current development branch
+```
 
+2. **Backend Setup**
+```bash
 cd server
 npm install
 
+# Create .env file with:
+PORT=5001
+MONGO_URI=mongodb+srv://your-connection-string
+NODE_ENV=development
+
+# Start backend
+npm run dev
+```
+
+3. **Frontend Setup**
+```bash
 cd ../client
 npm install
 
-PORT=5001
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/inventory
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
-
-
+# Create .env file with:
 VITE_API_URL=http://localhost:5001
 
-
-cd server
+# Start frontend
 npm run dev
+```
 
-POST /api/products
-{
-  "name": "Laptop",
-  "category": "Electronics",
-  "quantity": 10,
-  "price": 999.99
-}
+4. **Access Application**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5001
 
-{
-  "success": true,
-  "data": {
-    "_id": "abc123",
-    "name": "Laptop",
-    "category": "Electronics",
-    "quantity": 10,
-    "price": 999.99,
-    "inStock": true,
-    "createdAt": "2024-01-01T00:00:00.000Z"
-}
+## 🐳 Docker Deployment
 
+### Build and run with Docker Compose:
+```bash
+# From project root
+docker-compose up --build
 
-## Project Structure
-inventory-management/
+# Access at:
+# Frontend: http://localhost:3000
+# Backend: http://localhost:5001
+```
+
+### Docker Configuration:
+- Frontend served with Nginx
+- Backend runs on Node.js Alpine
+- MongoDB Atlas for database (external)
+- Environment variables managed via .env files
+
+## 🔒 Security Features & Analysis
+
+### Current Security Status
+
+#### ✅ Implemented
+- Environment variable management
+- HTTPS in production (Vercel/Render)
+- Basic input validation (client-side)
+- Automated security scanning
+- Container security scanning
+- Dependency vulnerability monitoring
+
+#### ⚠️ Identified Vulnerabilities 
+- **No Authentication System** - All endpoints publicly accessible
+- **Missing Authorization** - No role-based access control
+- **Unprotected API Endpoints** - CRUD operations without auth
+- **No Rate Limiting** - Vulnerable to brute force attacks
+- **Missing Security Headers** - No CSP, X-Frame-Options, etc.
+- **Client-side Sensitive Data** - EmailJS config in localStorage
+- **No Input Sanitization** - Server-side validation missing
+
+### Security Automation
+
+Three GitHub Actions workflows provide continuous security monitoring:
+
+1. **CodeQL Analysis** (`codeql-analysis.yml`)
+   - Static code analysis for security vulnerabilities
+   - Detects SQL injection, XSS, path traversal risks
+   - Runs on every push and weekly
+
+2. **Trivy Container Security** (`trivy-security.yml`)
+   - Scans Docker images for vulnerabilities
+   - Checks base images and dependencies
+   - Reports to GitHub Security tab
+
+3. **Dependency Security** (`dependency-check.yml`)
+   - npm audit for known vulnerabilities
+   - Secret scanning in codebase
+   - License compliance checking
+
+## 📁 Project Structure
+
+```
+inventory_tracker/
+├── .github/
+│   └── workflows/           # GitHub Actions security workflows
+│       ├── codeql-analysis.yml
+│       ├── trivy-security.yml
+│       └── dependency-check.yml
 ├── client/                  # React frontend
-│   ├── public/image            # Static files
 │   ├── src/
-│   │   ├── components/     # Reusable components
-│   │   │   ├── Dashboard/  # Dashboard components
-│   │   │   └── Layout/     # Layout components
-│   │   ├── context/        # React Context providers
+│   │   ├── components/     # Reusable UI components
 │   │   ├── pages/          # Page components
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Products.jsx
-│   │   │   ├── AddProduct.jsx
-│   │   │   └── EditProduct.jsx
 │   │   ├── services/       # API services
-│   │   │   ├── api.js
-│   │   │   └── emailService.js
-│   │   ├── theme/          # Material-UI theme
-│   │   ├── utils/          # Utility functions
-│   │   │   └── toast.js
-│   │   ├── App.jsx         # Main app component
-│   │   └── main.jsx        # Entry point
-│   ├── .env               # Environment variables
-│   └── package.json       # Dependencies
-│
-├── server/                 # Node.js backend
-│   ├── config/            # Configuration files
-│   │   └── db.js         # Database connection
-│   ├── controllers/       # Route handlers
-│   │   └── ProductController.js
-│   ├── middleware/        # Custom middleware
-│   ├── models/           # Database models
-│   │   └── ProductModel.js
-│   ├── routes/           # API routes
-│   │   └── ProductRoutes.js
-│   ├── .env             # Environment variables
-│   ├── server.js        # Entry point
-│   └── package.json     # Dependencies
-│
-├── .gitignore           # Git ignore file
-└── README.md           # Documentation
+│   │   └── context/        # State management
+│   ├── Dockerfile          # Frontend container config
+│   └── .env               # Environment variables (gitignored)
+├── server/                 # Express backend
+│   ├── controllers/        # Business logic
+│   ├── models/            # Database schemas
+│   ├── routes/            # API endpoints
+│   ├── config/            # Configuration
+│   ├── Dockerfile         # Backend container config
+│   └── .env              # Environment variables (gitignored)
+├── CS763_DOCS/            # Course documentation
+│   ├── screenshots/       # Application screenshots
+│   └── reports/          # Assignment reports
+├── docker-compose.yml     # Multi-container setup
+└── README.md             # This file
+```
 
-### Manual Testing Checklist
-- [ ] Add new product
-- [ ] Edit product details
-- [ ] Delete product
-- [ ] Search functionality
-- [ ] Quantity adjustments
-- [ ] Low stock warnings
-- [ ] Out of stock emails
-- [ ] Export to CSV
-- [ ] Mobile responsiveness
+## 🚀 Features
 
-## 🌐 Live Demo
-Frontend: https://inventory-tracker-frontend-ten.vercel.app
-Backend API: https://inventory-tracker-kuou.onrender.com
+### Core Functionality
+- ✅ **Product Management**: Complete CRUD operations
+- ✅ **Real-time Tracking**: Live inventory updates
+- ✅ **Smart Notifications**: Low stock and out-of-stock alerts
+- ✅ **Email Alerts**: Automated notifications via EmailJS
+- ✅ **Search & Filter**: Find products by name/category
+- ✅ **Bulk Operations**: Quick restock functionality
+- ✅ **Data Export**: CSV export for reports
+- ✅ **Responsive Design**: Mobile-friendly interface
+- ✅ **Dashboard Analytics**: Visual charts and statistics
 
+### Planned Security Enhancements
+- 🔐 JWT Authentication system
+- 👥 User registration and login
+- 🔑 Password hashing with bcrypt
+- 🛡️ Protected API routes
+- 📝 Role-based access control (RBAC)
+- 🚦 Rate limiting
+- 🔒 Security headers (Helmet.js)
+- ✅ Input validation and sanitization
+- 📊 Audit logging
 
-## ⚙️ Deployment
-- Frontend deployed with **Vercel**
-- Backend deployed with **Render**
-- CORS enabled between both environments
-- EmailJS integrated for automated alerts
+## 🧪 Testing
 
-## Future Enhancements
+### Manual Testing
+```bash
+# Backend API testing
+curl http://localhost:5001/api/products
 
-### Phase 1 - User Management
-- [ ] User authentication (JWT)
-- [ ] Role-based access control
-- [ ] User profiles
-- [ ] Activity logs
+# Frontend testing
+npm run test  # Coming soon
+```
 
-### Phase 2 - Advanced Inventory
-- [ ] Barcode/QR code scanning
-- [ ] Product images upload
-- [ ] Batch import from Excel
-- [ ] Category management
-- [ ] Product variants (size, color)
+### Security Testing
+```bash
+# Run dependency audit
+npm audit
 
-### Phase 3 - Business Intelligence
-- [ ] Advanced analytics dashboard
-- [ ] Sales forecasting
-- [ ] Inventory history tracking
-- [ ] Price history charts
-- [ ] Profit margin analysis
+# Check for secrets
+git secrets --scan
 
-### Phase 4 - Supply Chain
-- [ ] Supplier management
-- [ ] Purchase order system
-- [ ] Automated reordering
-- [ ] Multi-warehouse support
-- [ ] Shipment tracking
+# Container scanning (local)
+docker run --rm -v $(pwd):/src \
+  aquasecurity/trivy fs /src
+```
 
-### Phase 5 - Additional Features
-- [ ] Mobile app (React Native)
-- [ ] Dark mode theme
-- [ ] Multi-language support
-- [ ] Backup and restore
-- [ ] Integration with accounting software
-- [ ] Customer management
-- [ ] Invoice generation
-- [ ] Reports generation (PDF)
+## 📊 API Documentation
 
-## Troubleshooting
+### Base URL
+- Development: `http://localhost:5001`
+- Production: `https://inventory-tracker-kuou.onrender.com`
+
+### Endpoints (Currently Unprotected)
+
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|---------|
+| GET | `/api/products` | Get all products | 🔓 Public |
+| GET | `/api/products/:id` | Get single product | 🔓 Public |
+| POST | `/api/products` | Create product | 🔓 Public |
+| PUT | `/api/products/:id` | Update product | 🔓 Public |
+| DELETE | `/api/products/:id` | Delete product | 🔓 Public |
+
+### Example Request
+```javascript
+// Get all products
+fetch('http://localhost:5001/api/products')
+  .then(res => res.json())
+  .then(data => console.log(data));
+
+// Create product
+fetch('http://localhost:5001/api/products', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: 'Laptop',
+    category: 'Electronics',
+    quantity: 10,
+    price: 999.99
+  })
+});
+```
+
+## 🐛 Known Issues & Troubleshooting
 
 ### Common Issues
 
 1. **MongoDB Connection Error**
-   - Check connection string in `.env`
-   - Verify MongoDB service is running
-   - Check network connectivity
+   - Verify Atlas connection string in `.env`
+   - Check IP whitelist in Atlas dashboard
+   - Ensure internet connectivity
 
 2. **Port Already in Use**
-   - Change port in `.env` file
-   - Kill process using the port
+   ```bash
+   # Find process using port
+   lsof -i :5001
+   # Kill process
+   kill -9 [PID]
+   ```
 
-3. **Email Not Sending**
-   - Verify EmailJS credentials
-   - Check spam folder
-   - Enable less secure app access (Gmail)
+3. **Docker Build Fails**
+   ```bash
+   # Clean Docker cache
+   docker system prune -a
+   # Rebuild
+   docker-compose up --build
+   ```
 
-4. **CORS Error**
-   - Verify frontend URL in server CORS settings
-   - Check API URL in frontend `.env`
+4. **CORS Errors**
+   - Verify frontend URL in backend CORS config
+   - Check `VITE_API_URL` in frontend `.env`
 
-## Contributing
+## 🤝 Contributing
+
+Suggestions are welcome for the continuation of this project.
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open Pull Request
 
-## License
+## 📈 Development Roadmap
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Phase 1: Security Analysis (Current)
+- ✅ Vulnerability identification
+- ✅ Threat modeling setup
+- ✅ Security automation implementation
 
-## Contact
+### Phase 2: Authentication Implementation
+- [ ] JWT token system
+- [ ] User management
+- [ ] Session handling
+- [ ] Password security
 
-Your Name - [your.email@example.com](mailto:your.email@example.com)
+### Phase 3: Security Hardening
+- [ ] Input validation
+- [ ] Rate limiting
+- [ ] Security headers
+- [ ] CSRF protection
 
-Project Link: [https://github.com/yourusername/inventory-management](https://github.com/yourusername/inventory-management)
+### Phase 4: Testing & Verification
+- [ ] OWASP ZAP scanning
+- [ ] Penetration testing
+- [ ] Security audit
+- [ ] Performance testing
 
-## Acknowledgments
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
 
 - [Material-UI](https://mui.com/) - React component library
-- [Recharts](https://recharts.org/) - Data visualization
-- [EmailJS](https://www.emailjs.com/) - Email service
-- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Database hosting
-- [Vite](https://vitejs.dev/) - Build tool
-```
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Cloud database
+- [OWASP](https://owasp.org/) - Security best practices
+- [GitHub Security](https://github.com/features/security) - Security tools
+- Prof. Yuting Zhang - Boston University
+
+## 📞 Contact
+
+**Name**: Fatimah Hassan  
+**GitHub**: [@Fatimah1403](https://github.com/Fatimah1403)  
+**Project Link**: [https://github.com/Fatimah1403/InventoryTracker](https://github.com/Fatimah1403/InventoryTracker)
+
+---
+

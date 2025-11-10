@@ -112,9 +112,9 @@ function Products() {
             showSuccess(`Quantity updated to ${newQuantity} for ${product.name}`);
           }
           
-          await fetchProducts();  // Always fetch after any update
+          await fetchProducts();  
           
-        } catch (error) {  // This closing bracket was missing
+        } catch (error) { 
           showError("Failed to update quantity");
           addNotification('Failed to update quantity', 'error');
         }
@@ -163,48 +163,34 @@ function Products() {
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h4">Products Inventory</Typography>
-                {/* <Button
+            
+                <Button
+                    variant="outlined"
+                    onClick={exportToCSV}
+                    startIcon={<PrintIcon />} 
+                    className="no-print" 
+                >
+                    Export CSV
+                </Button>
+
+                <Button
+                    variant="outlined"
+                    onClick={handlePrint}
+                    startIcon={<PrintIcon />}
+                    className="no-print" 
+                >
+                    Print
+                </Button>
+
+                <Button
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={() => navigate('/add-product')}
                     sx={{ backgroundColor: '#4A6B7C' }}
-                    >
-                    Add Product
-                </Button>
-                <Button
-                    variant="outlined"
-                    onClick={exportToCSV}
-                    sx={{ mr: 2 }}
+                    className="no-print" 
                 >
-                    Export CSV
-                </Button> */}
-                    <Button
-                        variant="outlined"
-                        onClick={exportToCSV}
-                        startIcon={<PrintIcon />} 
-                        className="no-print" 
-                        >
-                        Export CSV
-                        </Button>
-
-                        <Button
-                        variant="outlined"
-                        onClick={handlePrint}
-                        startIcon={<PrintIcon />}
-                        className="no-print" 
-                        >
-                        Print
-                        </Button>
-
-                        <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            onClick={() => navigate('/add-product')}
-                            sx={{ backgroundColor: '#4A6B7C' }}
-                            className="no-print" 
-                            >
-                            Add Product
-                    </Button>
+                        Add Product
+                </Button>
             </Box>
             {/* Search Bar */}
             <Paper sx={{ p: 2, mb: 3 }}>
