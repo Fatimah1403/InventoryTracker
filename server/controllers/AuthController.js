@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken"
 import User from "../models/UserModel.js"
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+import sendEmail from "../utils/sendEmail.js";
 
 
 const generateToken = (id, role) => {
@@ -61,3 +63,4 @@ export const loginUser = async (req, res) => {
         
     }
 }
+
