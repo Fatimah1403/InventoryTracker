@@ -1,6 +1,26 @@
 version: '3.8'
 
 services:
+  mongo:
+    image: mongo:6
+    container_name: inventory-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - inventory-network
+
+  redis:
+    image: redis:7
+    container_name: inventory-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - inventory-network
+
   backend:
     build: 
       context: ./server
@@ -11,6 +31,9 @@ services:
       - "5002:5001"
     env_file:
       - ./server/.env  
+    depends_on:
+      - mongo
+      - redis
     networks:
       - inventory-network
 
@@ -32,3 +55,6 @@ services:
 networks:
   inventory-network:
     driver: bridge
+
+volumes:
+  mongo_data:

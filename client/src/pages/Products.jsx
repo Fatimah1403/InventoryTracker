@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import axios
 import { showSuccess, showError } from '../utils/toast';
-import { sendOutOfStockEmail } from '../services/emailService';
 import { useNotifications } from '../context/NotificationContext';
 
 import { motion } from "framer-motion";
@@ -42,7 +42,7 @@ function Products() {
     const [searchTerm, setSearchTerm] = useState('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [loading, setLoading] = useState(true);
+    const [, setLoading] = useState(true);
     const { addNotification } = useNotifications();
 
 
@@ -65,7 +65,7 @@ function Products() {
             setProducts(response.data.data);
             setFilteredProducts(response.data.data);
             setLoading(false);
-        } catch (error) {
+        } catch {
             console.error("Error fetching products:", error);
             setLoading(false);
             
@@ -98,8 +98,21 @@ function Products() {
           
           if (newQuantity === 0 && currentQuantity > 0) {
             // Out of stock
-            await sendOutOfStockEmail(product.name);
-            showError(`⚠️ ${product.name} is now out of stock!`);
+            if (newQuantity === 0 && currentQuantity > 0) {
+                try {
+                  await axios.post(`${import.meta.env.VITE_API_URL_FR}api/notifications/out-of-stock`, {
+                    name: product.name,
+                    category: product.category,
+                    previousQuantity: currentQuantity,
+                  });
+                  showError(`⚠️ ${product.name} is now out of stock!`);
+                  addNotification(`${product.name} is out of stock! Email sent.`, 'error');
+                } catch {
+                  showError(`⚠️ ${product.name} is out of stock, but email failed`);
+                  addNotification(`Out-of-stock email failed for ${product.name}`, 'error');
+                }
+              }
+                          showError(`⚠️ ${product.name} is now out of stock!`);
             addNotification(`${product.name} is out of stock! Email sent.`, 'error');
             
           } else if (newQuantity > 0 && newQuantity <= 5) {
@@ -114,6 +127,7 @@ function Products() {
           
           await fetchProducts();  
           
+        // eslint-disable-next-line no-unused-vars
         } catch (error) { 
           showError("Failed to update quantity");
           addNotification('Failed to update quantity', 'error');

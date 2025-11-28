@@ -9,6 +9,7 @@ import connectDB from "./config/db.js";
 import productRoutes from "./routes/ProductRoutes.js";
 import authRoutes from "./routes/AuthRoutes.js";
 import resetRoutes from "./routes/ResetRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -42,6 +43,8 @@ app.use((req, res, next) => {
 app.use("/api/products", productRoutes)
 app.use("/api/auth", authRoutes);
 app.use("/api/password", resetRoutes);
+app.use("/api/notifications", notificationRoutes);
+
 
 
 // Basic route for testing

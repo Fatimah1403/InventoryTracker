@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import redisClient from "../config/redisClient";
-import User from "../models/User.js";
+import redisClient from "../config/redisClient.js";
+import User from "../models/UserModel.js";
 import sendEmail from "../utils/sendEmail.js";
 
 
@@ -23,17 +23,26 @@ export const requestPasswordReset = async (req, res) => {
         );
 
         const resetLink = `${process.env.FRONTEND_URL}/reset-password/${user._id}/${resetToken}`;
-        await sendEmail({
-            to: user.email,
-            subject: "Password Reset Request",
-            html:`<p>Click the link to reset your password:</p>
-            <a href="${resetLink}">${resetLink}</a>`
+        const htmlMessage = `
+            <h2>Password Reset Request</h2>
+            <p>Hi ${user.name || "there"},</p>
+            <p>You requested a password reset for your Inventory Tracker account.</p>
+            <p>Click the link below to reset your password (valid for 15 minutes):</p>
+            <p><a href="${resetLink}" target="_blank">${resetLink}</a></p>
+            <p>If you did not request this, you can ignore this email.</p>
+            `;
+
+            await sendEmail({
+            email: user.email,
+            subject: "Inventory Tracker - Password Reset",
+            message: htmlMessage,
         });
 
-        res.status(200).json({ message: "Password reset link sent to email" });
+        res.status(200).json({ message: "Reset email sent" });
 
     } catch (error) {
-        res.status(500).json({ message: "Error requesting password reset", error: error.message });
+        console.error("Reset email error:", error);
+        res.status(500).json({ message: "Failed to send reset email", error: error.message });
         
     }
 }
@@ -54,12 +63,11 @@ export const resetPassword = async (req, res) => {
         user.password = newPassword;
         await user.save();
 
-        // Delete reset token after use
         await redisClient.del(`reset:${userId}`);
 
-        res.status(200).json({ message: "Password reset successful" });
+        res.status(200).json({ message: "Password updated successful" });
 
     } catch (err) {
-        res.status(500).json({ message: "Could not reset password", error: err.message });
+        res.status(500).json({ message: "Reset failed", error: err.message });
     }
 };
