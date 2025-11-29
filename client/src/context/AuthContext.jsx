@@ -26,9 +26,14 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password, rememberMe = false) => {
         try {
             setError(null);
-            const response = await axios.post('/auth/login', { email, password });
+            const response = await axios.post('/api/auth/login', { email, password });
             
             const { token, user: userData } = response.data;
+
+            localStorage.removeItem("token");
+            sessionStorage.removeItem("token");
+            localStorage.removeItem("user");
+            sessionStorage.removeItem("user")
             
             // Store token and user data
             if (rememberMe) {
@@ -50,7 +55,7 @@ export const AuthProvider = ({ children }) => {
     const register = async (formData) => {
         try {
             setError(null);
-            const response = await axios.post('/auth/register', formData);
+            const response = await axios.post('/api/auth/register', formData);
             
             // Auto-login after registration
             if (response.data.user) {
@@ -79,7 +84,7 @@ export const AuthProvider = ({ children }) => {
     const forgotPassword = async (email) => {
         try {
             setError(null);
-            const response = await axios.post('/password/request', { email });
+            const response = await axios.post('/api/password/request', { email });
             return { success: true, data: response.data };
         } catch (err) {
             const message = err.response?.data?.message || 'Failed to send reset email';
@@ -91,7 +96,7 @@ export const AuthProvider = ({ children }) => {
     const resetPassword = async (userId, token, newPassword) => {
         try {
             setError(null);
-            const response = await axios.post('/password/confirm', {
+            const response = await axios.post('/api/password/confirm', {
                 userId,
                 token,
                 newPassword
@@ -105,7 +110,7 @@ export const AuthProvider = ({ children }) => {
     };
     const updateProfile = async (updates) => {
         try {
-            const response = await axios.put('/auth/profile', updates);
+            const response = await axios.put('/api/auth/profile', updates);
             const updatedUser = response.data.user;
             
             setUser(updatedUser);
@@ -151,24 +156,31 @@ export const AuthProvider = ({ children }) => {
     }, [navigate]);
 
     const checkAuth = () => {
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
-
-        if (token && userData) {
-            try {
-                const parsedUser = JSON.parse(userData);
-                setUser(parsedUser);
-
-                axios.get('/auth/verify').catch(() => {
-                    logout();
-                })
-            } catch (error) {
-                logout();
-            }
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
+    
+        const userData =
+          localStorage.getItem("user") || sessionStorage.getItem("user");
+    
+        if (!token || !userData) {
+            setLoading(false);
+            return;
         }
+    
+        try {
+            const parsedUser = JSON.parse(userData);
+            setUser(parsedUser);
+    
+            axios.get("/api/auth/verify").catch(() => {
+                logout(false);
+            });
+        } catch (error) {
+            logout(false);
+        }
+    
         setLoading(false);
     };
-
+    
     
     const value = {
         user,
