@@ -15,7 +15,7 @@ A full-stack inventory management system with comprehensive security implementat
 
 This inventory management system demonstrates the evolution from a feature-complete but security-vulnerable application to a properly secured system with comprehensive authentication, encryption, and security controls.
 
-### Current Security Status (Assignment 3 - Completed)
+### Current Security Status 
 - ✅ **JWT Authentication** with refresh tokens (15min access, 7-day refresh)
 - ✅ **Bcrypt Password Hashing** with 12 salt rounds
 - ✅ **Redis Session Management** for secure token storage
@@ -74,7 +74,6 @@ This inventory management system demonstrates the evolution from a feature-compl
 ```bash
 git clone https://github.com/Fatimah1403/InventoryTracker.git
 cd InventoryTracker
-git checkout AuthSec  # Latest security implementation
 ```
 
 2. **Backend Setup**
