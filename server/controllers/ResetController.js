@@ -71,3 +71,19 @@ export const resetPassword = async (req, res) => {
         res.status(500).json({ message: "Reset failed", error: err.message });
     }
 };
+export const verifyResetToken = async (req, res) => {
+    try {
+        const { userId, token } = req.params;
+
+        const resetToken = await ResetToken.findOne({ userId, token });
+
+        if (!resetToken) {
+            return res.status(400).json({ message: "Invalid or expired token" });
+        }
+
+        return res.status(200).json({ message: "Valid token" });
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
+

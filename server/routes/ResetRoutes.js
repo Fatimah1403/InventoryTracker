@@ -1,8 +1,11 @@
 import express from 'express';
-import { resetPassword, requestPasswordReset } from '../controllers/ResetController.js';
+import { resetPassword, requestPasswordReset, verifyResetToken } from '../controllers/ResetController.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 
 const router = express.Router();
+
+router.get("/verify/:userId/:token", verifyResetToken);
+
 
 router.post(
     "/request",

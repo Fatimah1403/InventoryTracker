@@ -21,7 +21,7 @@ export const rateLimit = (key, limit, windowInSeconds) => {
 
             
             if (count === 0) {
-                await redisClient.setEx(redisKey, windowInSeconds, 1);
+                await redisClient.setEx(redisKey, windowInSeconds, "1");
             } 
             
             else {

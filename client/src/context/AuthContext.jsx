@@ -1,51 +1,71 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { setAccessToken } from '../services/api';
+
 
 const AuthContext = createContext({});
+let accessToken = null; 
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+axios.defaults.withCredentials = true; 
 
-axios.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+
+axios.interceptors.response.use(
+    (res) => res,
+    async (err) => {
+      const original = err.config;
+
+      if (original.url.includes("/api/auth/refresh")) {
+        console.warn("Refresh request failed.");
+        return Promise.reject(err);
+      }
+  
+      if (err.response?.status === 401 && !original._retry) {
+        original._retry = true;
+  
+        try {
+          const refreshed = await axios.post( import.meta.env.VITE_API_URL + "/api/auth/refresh", {}, { withCredentials: true });
+  
+          const newAccessToken = refreshed.data.accessToken;
+          setAccessToken(newAccessToken);
+
+          axios.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
+          original.headers["Authorization"] = `Bearer ${newAccessToken}`;
+  
+          return axios(original);
+        } catch (refreshErr) {
+            console.error('Refresh failed:', refreshErr);
+            window.location.href = "/login";
+            return Promise.reject(refreshErr);
         }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
-
-export const AuthProvider = ({ children }) => {
+      }
+  
+      return Promise.reject(err);
+    }
+  );
+  export const AuthProvider = ({ children }) => {
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    
-    const login = async (email, password, rememberMe = false) => {
-        try {
-            setError(null);
-            const response = await axios.post('/api/auth/login', { email, password });
-            
-            const { token, user: userData } = response.data;
 
-            localStorage.removeItem("token");
-            sessionStorage.removeItem("token");
-            localStorage.removeItem("user");
-            sessionStorage.removeItem("user")
+    
+    const login = async (email, password) => {
+        try {
+            setError(null)
+            const res = await axios.post("/api/auth/login", { email, password });
+            const { accessToken, user: userData } = res.data;
+
+
+            setAccessToken(accessToken);
             
-            // Store token and user data
-            if (rememberMe) {
-                localStorage.setItem('token', token);
-                localStorage.setItem('user', JSON.stringify(userData));
-            } else {
-                sessionStorage.setItem('token', token);
-                sessionStorage.setItem('user', JSON.stringify(userData));
-            }
+            axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
             
+            localStorage.setItem("user", JSON.stringify(userData));
             setUser(userData);
             return { success: true, data: userData };
+
         } catch (err) {
             const message = err.response?.data?.message || 'Login failed';
             setError(message);
@@ -56,13 +76,8 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const response = await axios.post('/api/auth/register', formData);
-            
-            // Auto-login after registration
-            if (response.data.user) {
-                await login(formData.email, formData.password, true);
-            }
-            
             return { success: true, data: response.data };
+
         } catch (err) {
             const message = err.response?.data?.message || 'Registration failed';
             setError(message);
@@ -70,16 +85,18 @@ export const AuthProvider = ({ children }) => {
         }
     };
     const logout = async () => {
-        // Clear storage
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('user');
-        
-        delete axios.defaults.headers.common['Authorization'];
-        
+        try {
+            await axios.post("/api/auth/logout", {}, { withCredentials: true });
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+        setAccessToken(null);
+        delete axios.defaults.headers.common["Authorization"];
+
+        localStorage.removeItem("user");
         setUser(null);
-        navigate('/login');
+        navigate("/login");
+
     };
     const forgotPassword = async (email) => {
         try {
@@ -87,9 +104,10 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.post('/api/password/request', { email });
             return { success: true, data: response.data };
         } catch (err) {
-            const message = err.response?.data?.message || 'Failed to send reset email';
+            const message = err.response?.data?.message || "Failed to send email";
             setError(message);
             return { success: false, error: message };
+            
         }
     };
 
@@ -103,7 +121,7 @@ export const AuthProvider = ({ children }) => {
             });
             return { success: true, data: response.data };
         } catch (err) {
-            const message = err.response?.data?.message || 'Failed to reset password';
+            const message = err.response?.data?.message || "Failed to reset password";
             setError(message);
             return { success: false, error: message };
         }
@@ -134,58 +152,74 @@ export const AuthProvider = ({ children }) => {
         if (user.role === 'admin') return true; 
         return hasRole(requiredRoles);
     };
-    
 
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
-    useEffect(() => {
-        const interceptor = axios.interceptors.response.use(
-            (response) => response,
-            async (error) => {
-                if (error.response?.status === 401) {
-                    await logout();
-                    navigate('/login');
-                }
-                return Promise.reject(error);
-            }
-        );
-        return () => axios.interceptors.response.eject(interceptor);
-        
-    }, [navigate]);
-
-    const checkAuth = () => {
-        const token =
-          localStorage.getItem("token") || sessionStorage.getItem("token");
+   
+    // const checkAuth = async () => {
+    //     const savedUser = localStorage.getItem("user");
+    //     if (!savedUser) {
+    //       setLoading(false);
+    //       return;
+    //     }
     
-        const userData =
-          localStorage.getItem("user") || sessionStorage.getItem("user");
+    //     try {
+    //         const refreshed = await axios.post("/api/auth/refresh", {}, { 
+    //             withCredentials: true 
+    //         });
+            
+    //         const { accessToken } = refreshed.data;
+            
+    //         setAccessToken(accessToken);
+    //         axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+            
+    //         setUser(JSON.parse(savedUser));
+    //     } catch (error) {
+    //         console.error('Auth check failed:', error);
+    //         localStorage.removeItem("user");
+    //         setUser(null);
+    //     }
     
-        if (!token || !userData) {
-            setLoading(false);
-            return;
+    //     setLoading(false);
+    //   };
+    const checkAuth = async () => {
+        const savedUser = localStorage.getItem("user");
+        if (savedUser) {
+            setUser(JSON.parse(savedUser));
         }
-    
-        try {
-            const parsedUser = JSON.parse(userData);
-            setUser(parsedUser);
-    
-            axios.get("/api/auth/verify").catch(() => {
-                logout(false);
-            });
-        } catch (error) {
-            logout(false);
-        }
-    
         setLoading(false);
     };
+    
+    
+      useEffect(() => {
+        checkAuth();
+      }, []);
+
+    //   useEffect(() => {
+    //     if (!user) return;
+
+    //     const refreshInterval = setInterval(async () => {
+    //         try {
+    //             const refreshed = await axios.post("/api/auth/refresh", {}, { 
+    //                 withCredentials: true 
+    //             });
+                
+    //             const { accessToken } = refreshed.data;
+    //             setAccessToken(accessToken);
+    //             axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+                
+    //             console.log('Token refreshed successfully');
+    //         } catch (error) {
+    //             console.error('Auto-refresh failed:', error);
+    //             logout();
+    //         }
+    //     }, 14 * 60 * 1000); 
+
+    //     return () => clearInterval(refreshInterval);
+    // }, [user]);
     
     
     const value = {
         user,
         loading,
-        error,
         login,
         register,
         logout,
@@ -196,9 +230,12 @@ export const AuthProvider = ({ children }) => {
         canAccess,
         isAuthenticated: !!user,
     };
+    
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-
+    
 };
+    
+// Move useAuth outside of AuthProvider
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {

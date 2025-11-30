@@ -120,7 +120,8 @@ function AddProduct() {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>/api/products
+
               <TextField
                 fullWidth
                 label="Price"

@@ -13,8 +13,7 @@ import {
     InputAdornment,
     FormControlLabel,
     Checkbox,
-    CircularProgress,
-    Divider
+    CircularProgress
 } from '@mui/material';
 import {
     Visibility,
@@ -54,7 +53,6 @@ const Login = () => {
         setLoading(true);
         setLocalError('');
 
-        // Basic validation
         if (!formData.email || !formData.password) {
             setLocalError('Please fill in all fields');
             setLoading(false);
@@ -68,7 +66,6 @@ const Login = () => {
         );
 
         if (result.success) {
-            // Navigate based on user role
             if (result.data.role === 'admin') {
                 navigate('/');
             } else {
@@ -81,20 +78,6 @@ const Login = () => {
         setLoading(false);
     };
 
-    // Demo credentials helper
-    const fillDemoCredentials = (role) => {
-        const credentials = {
-            admin: { email: 'admin@example.com', password: 'Admin123!' },
-            manager: { email: 'manager@example.com', password: 'Manager123!' },
-            viewer: { email: 'viewer@example.com', password: 'Viewer123!' }
-        };
-        
-        setFormData(prev => ({
-            ...prev,
-            ...credentials[role],
-            rememberMe: true
-        }));
-    };
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -194,7 +177,6 @@ const Login = () => {
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <IconButton
-                                            aria-label="toggle password visibility"
                                             onClick={() => setShowPassword(!showPassword)}
                                             edge="end"
                                             disabled={loading}
@@ -254,37 +236,8 @@ const Login = () => {
                                 </Link>
                             </Typography>
                         </Box>
-                        
-                        {/* Demo Accounts Section - Remove in production */}
-                        <Divider sx={{ my: 3 }}>
-                            <Typography variant="caption" color="text.secondary">
-                                DEMO ACCOUNTS
-                            </Typography>
-                        </Divider>
-                        
-                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                            <Button 
-                                size="small" 
-                                onClick={() => fillDemoCredentials('admin')}
-                                disabled={loading}
-                            >
-                                Admin
-                            </Button>
-                            <Button 
-                                size="small" 
-                                onClick={() => fillDemoCredentials('manager')}
-                                disabled={loading}
-                            >
-                                Manager
-                            </Button>
-                            <Button 
-                                size="small" 
-                                onClick={() => fillDemoCredentials('viewer')}
-                                disabled={loading}
-                            >
-                                Viewer
-                            </Button>
-                        </Box>
+
+                        {/* DEMO SECTION REMOVED */}
                     </Box>
                 </Paper>
             </Box>
