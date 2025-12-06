@@ -36,7 +36,7 @@ export function ThemeModeProvider({ children }) {
   );
 
   return (
-    <ThemeContext.Provider value={{ mode, toggleMode }}>
+    <ThemeContext.Provider value={{ mode, toggleMode, theme }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}

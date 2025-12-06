@@ -1,5 +1,5 @@
-# Use Node.js for ARM64 (M3 Mac)
-FROM node:18-alpine
+# Use Node.js for ARM64 (M3 Mac compatible)
+FROM --platform=linux/arm64 node:18-alpine
 
 # Set working directory
 WORKDIR /app
@@ -7,14 +7,13 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm cRUN npm install --only=production
-i --only=production
+# Install production dependencies only
+RUN npm install --only=production
 
-# Copy all server files
+# Copy the rest of the server files
 COPY . .
 
-# Expose the port
+# Expose backend port
 EXPOSE 5001
 
 # Start the server

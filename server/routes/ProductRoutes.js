@@ -1,4 +1,5 @@
 import express from "express";
+import { protect, authorize } from "../middleware/authMiddleware.js";
 import {
     createProduct,
     getProducts,
@@ -10,18 +11,43 @@ import {
 
 const router = express.Router();
 
-// Routes for /api/products
+// /api/products
 router.route("/")
-    .get(getProducts)      
-    .post(createProduct);  
+    .get(
+        protect,
+        authorize("admin", "manager", "viewer"),
+        getProducts
+    )
+    .post(
+        protect,
+        authorize("admin", "manager"),
+        createProduct
+    );
 
-// Routes for /api/products/:id
+// /api/products/:id
 router.route("/:id")
-    .get(getProduct)       
-    .put(updateProduct)    
-    .delete(deleteProduct); 
+    .get(
+        protect,
+        authorize("admin", "manager", "viewer"),
+        getProduct
+    )
+    .put(
+        protect,
+        authorize("admin", "manager"),
+        updateProduct
+    )
+    .delete(
+        protect,
+        authorize("admin"),
+        deleteProduct
+    );
 
-// Special route for quantity updates
-router.patch("/:id/quantity", updateQuantity); 
+// Quantity update
+router.patch(
+    "/:id/quantity",
+    protect,
+    authorize("admin", "manager"),
+    updateQuantity
+);
 
 export default router;

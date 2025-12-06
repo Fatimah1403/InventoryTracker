@@ -4,33 +4,50 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
+import cookieParser from "cookie-parser";
+
 
 // Import routes
 import productRoutes from "./routes/ProductRoutes.js";
+import authRoutes from "./routes/AuthRoutes.js";
+import resetRoutes from "./routes/ResetRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config();
 const app = express();
 
-// CORS configuration - MORE DETAILED
-const corsOptions = {
-  origin: [
-    'http://localhost:5173', 
-    'http://localhost:5001',
-    'https://inventory-tracker-frontend-ten.vercel.app'
-  ], 
-  credentials: true,
-  optionsSuccessStatus: 200,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     const allowedOrigins = [
+//       'http://localhost:5173',
+//       'http://localhost:5001',
+//       'https://inventory-tracker-frontend-ten.vercel.app'
+//     ];
+//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true, 
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', "Authorization"],
+//   exposedHeaders: ['set-cookie'],
+
+// };
+app.use(cors({
+  origin: "http://localhost:5173",   
+  credentials: true                 
+}));
 
 // Middleware
-app.use(cors(corsOptions)); // Allow cross-origin requests
-app.use(express.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(cookieParser());
+// app.use(cors(corsOptions)); 
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
 app.use(morgan("dev"));
 
-// Logging middleware (helps debug)
+
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
@@ -38,6 +55,12 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/products", productRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/password", resetRoutes);
+app.use("/api/notifications", notificationRoutes);
+
+
+
 // Basic route for testing
 app.get("/", (req, res) => {
   res.send({ message: "Inventory Management API is running!" });

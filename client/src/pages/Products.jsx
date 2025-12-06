@@ -1,144 +1,186 @@
+// frontend/src/pages/Products.jsx
 import React, { useState, useEffect } from 'react';
-import { showSuccess, showError } from '../utils/toast';
-import { sendOutOfStockEmail } from '../services/emailService';
-import { useNotifications } from '../context/NotificationContext';
-
-import { motion } from "framer-motion";
-
 import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  IconButton,
-  Button,
-  Chip,
-  TextField,
-  InputAdornment,
-  Typography,
-  Tooltip,
+    Box,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Button,
+    Typography,
+    IconButton,
+    Chip,
+    TextField,
+    InputAdornment,
+    CircularProgress,
+    Alert,
+    TablePagination,
+    Tooltip
 } from '@mui/material';
 import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Search as SearchIcon,
-  Add as AddIcon,
-  Remove as RemoveIcon,
-  Print as PrintIcon,
+    Edit,
+    Delete,
+    Add,
+    Search,
+    Warning,
+    Remove as RemoveIcon,
+    Add as AddIcon,
+    Print as PrintIcon,
+    Download as DownloadIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { productAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { productAPI, notificationAPI } from '../services/api';
+import { showSuccess, showError } from '../utils/toast';
+import { useNotifications } from '../context/NotificationContext';
+import { motion } from "framer-motion";
 
+// Add print styles
+const printStyles = `
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    table {
+        width: 100% !important;
+    }
+}
+`;
 
 function Products() {
     const navigate = useNavigate();
+    const { hasRole, user } = useAuth();
+    const { addNotification } = useNotifications();
     const [products, setProducts] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [loading, setLoading] = useState(true);
-    const { addNotification } = useNotifications();
 
+    // Inject print styles
+    useEffect(() => {
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = printStyles;
+        document.head.appendChild(styleSheet);
+        return () => document.head.removeChild(styleSheet);
+    }, []);
 
+    // Fetch products on mount
     useEffect(() => {
         fetchProducts();
-      }, []);
-    
-      useEffect(() => {
-        // Filter products based on search
+    }, []);
+
+    // Filter products when search term changes
+    useEffect(() => {
         const filtered = products.filter(product =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.category.toLowerCase().includes(searchTerm.toLowerCase())
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredProducts(filtered);
-      }, [searchTerm, products]);
+    }, [searchTerm, products]);
 
-      const fetchProducts = async () => {
+    const fetchProducts = async () => {
         try {
-            const response = await productAPI.getAll(); 
-            setProducts(response.data.data);
-            setFilteredProducts(response.data.data);
+            setLoading(true);
+            setError(null);
+            const response = await productAPI.getAll();
+            const productData = response.data?.data || response.data || [];
+            setProducts(productData);
+            setFilteredProducts(productData);
+        } catch (err) {
+            console.error('Error fetching products:', err);
+            setError(err.response?.data?.message || 'Failed to fetch products');
+            showError('Failed to load products');
+        } finally {
             setLoading(false);
-        } catch (error) {
-            console.error("Error fetching products:", error);
-            setLoading(false);
-            
         }
     };
-    const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this product?')) {
-          try {
-            const product = products.find(p => p._id === id);
+
+    const handleDelete = async (id, productName) => {
+        if (!window.confirm(`Are you sure you want to delete "${productName}"?`)) {
+            return;
+        }
+
+        try {
             await productAPI.delete(id);
-            showSuccess('Product deleted successfully!');
-            // Notification for history
-            addNotification(`Deleted: ${product.name}`, 'info');
-        
+            showSuccess('Product deleted successfully');
+            addNotification(`Deleted: ${productName}`, 'info');
             fetchProducts();
-          } catch (error) {
-            showError('Failed to delete product');
+        } catch (err) {
+            console.error('Error deleting product:', err);
+            showError(err.response?.data?.message || 'Failed to delete product');
             addNotification('Failed to delete product', 'error');
-          }
         }
     };
-    const handleQuantityChange = async (id, currentQuantity, change) => {
-        const newQuantity = Math.max(0, currentQuantity + change);
-        
-        if (newQuantity === currentQuantity) return;
-        
+
+    const handleQuantityUpdate = async (id, newQuantity, product) => {
         try {
-          const product = products.find(p => p._id === id);
-          await productAPI.updateQuantity(id, newQuantity);
-          
-          if (newQuantity === 0 && currentQuantity > 0) {
-            // Out of stock
-            await sendOutOfStockEmail(product.name);
-            showError(`⚠️ ${product.name} is now out of stock!`);
-            addNotification(`${product.name} is out of stock! Email sent.`, 'error');
+            const oldQuantity = product.quantity;
+            await productAPI.updateQuantity(id, newQuantity);
             
-          } else if (newQuantity > 0 && newQuantity <= 5) {
-            // Low stock warning
-            showSuccess(`Quantity updated: ${newQuantity}`);
-            addNotification(`Low stock warning: ${product.name} (${newQuantity} left)`, 'warning');
+            // Check if product is now out of stock
+            if (oldQuantity > 0 && newQuantity === 0) {
+                // Send out-of-stock notification
+                try {
+                    await notificationAPI.sendOutOfStockAlert({
+                        name: product.name,
+                        category: product.category,
+                        previousQuantity: oldQuantity
+                    });
+                    showError(`⚠️ ${product.name} is now out of stock! Email sent.`);
+                    addNotification(`${product.name} is out of stock! Email sent.`, 'error');
+                } catch (notifError) {
+                    console.error('Failed to send notification:', notifError);
+                    showError(`⚠️ ${product.name} is out of stock, but email failed`);
+                    addNotification(`Out-of-stock email failed for ${product.name}`, 'error');
+                }
+            } else if (newQuantity > 0 && newQuantity <= 5) {
+                // Low stock warning
+                showSuccess(`Quantity updated: ${newQuantity}`);
+                addNotification(`Low stock warning: ${product.name} (${newQuantity} left)`, 'warning');
+            } else {
+                // Normal update
+                showSuccess(`Quantity updated to ${newQuantity} for ${product.name}`);
+            }
             
-          } else {
-            // Normal update
-            showSuccess(`Quantity updated to ${newQuantity} for ${product.name}`);
-          }
-          
-          await fetchProducts();  
-          
-        } catch (error) { 
-          showError("Failed to update quantity");
-          addNotification('Failed to update quantity', 'error');
+            fetchProducts();
+        } catch (err) {
+            console.error('Error updating quantity:', err);
+            showError('Failed to update quantity');
+            addNotification('Failed to update quantity', 'error');
         }
-    }; 
-      
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
     };
-    
-      const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
+
+    const getStockStatus = (quantity) => {
+        if (quantity === 0) {
+            return <Chip label="Out of Stock" color="error" size="small" icon={<Warning />} />;
+        } else if (quantity < 10) {
+            return <Chip label="Low Stock" color="warning" size="small" />;
+        }
+        return <Chip label="In Stock" color="success" size="small" />;
     };
+
+    // Export to CSV function
     const exportToCSV = () => {
         const csvContent = [
-            ['Product Name', 'Category', 'Quantity', 'Price', 'Status'],
+            ['Product Name', 'Category', 'Quantity', 'Price', 'Status', 'Total Value'],
             ...filteredProducts.map(p => [
                 p.name,
                 p.category,
                 p.quantity,
                 p.price,
-                p.quantity > 0 ? 'In Stock' : 'Out of Stock'
+                p.quantity > 0 ? (p.quantity <= 5 ? 'Low Stock' : 'In Stock') : 'Out of Stock',
+                (p.quantity * p.price).toFixed(2)
             ])
-
         ].map(row => row.join(',')).join('\n');
 
         const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -147,12 +189,51 @@ function Products() {
         a.href = url;
         a.download = `inventory-${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
-    }
-    const handlePrint = () => {
-        document.title = "Product Inventory Report";
-        window.print();
+        window.URL.revokeObjectURL(url);
+        
+        showSuccess('CSV exported successfully');
+        addNotification('Inventory exported to CSV', 'success');
     };
-    document.body.setAttribute('data-date', new Date().toLocaleDateString());
+
+    // Print function
+    const handlePrint = () => {
+        const originalTitle = document.title;
+        document.title = `Product Inventory Report - ${new Date().toLocaleDateString()}`;
+        window.print();
+        document.title = originalTitle;
+    };
+
+    // Pagination handlers
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box>
+                <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                </Alert>
+                <Button variant="contained" onClick={fetchProducts}>
+                    Retry
+                </Button>
+            </Box>
+        );
+    }
+
     return (
         <Box
             component={motion.div}
@@ -161,165 +242,219 @@ function Products() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.4 }}
         >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h4">Products Inventory</Typography>
-            
-                <Button
-                    variant="outlined"
-                    onClick={exportToCSV}
-                    startIcon={<PrintIcon />} 
-                    className="no-print" 
-                >
-                    Export CSV
-                </Button>
-
-                <Button
-                    variant="outlined"
-                    onClick={handlePrint}
-                    startIcon={<PrintIcon />}
-                    className="no-print" 
-                >
-                    Print
-                </Button>
-
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={() => navigate('/add-product')}
-                    sx={{ backgroundColor: '#4A6B7C' }}
-                    className="no-print" 
-                >
-                        Add Product
-                </Button>
+            {/* Header with title and actions */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+                <Typography variant="h4">
+                    Inventory Management
+                    {user && (
+                        <Typography variant="caption" display="block" color="text.secondary">
+                            Logged in as: {user.name} ({user.role})
+                        </Typography>
+                    )}
+                </Typography>
+                
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }} className="no-print">
+                    <Button
+                        variant="outlined"
+                        startIcon={<DownloadIcon />}
+                        onClick={exportToCSV}
+                    >
+                        Export CSV
+                    </Button>
+                    
+                    <Button
+                        variant="outlined"
+                        startIcon={<PrintIcon />}
+                        onClick={handlePrint}
+                    >
+                        Print
+                    </Button>
+                    
+                    {hasRole(['admin', 'manager']) && (
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={() => navigate('/dashboard/products/add')}
+                            sx={{ backgroundColor: '#4A6B7C' }}
+                        >
+                            Add Product
+                        </Button>
+                    )}
+                </Box>
             </Box>
+
             {/* Search Bar */}
-            <Paper sx={{ p: 2, mb: 3 }}>
+            <Paper sx={{ p: 2, mb: 3 }} className="no-print">
                 <TextField
-                fullWidth
-                variant="outlined"
-                placeholder="Search products by name or category..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                    startAdornment: (
-                    <InputAdornment position="start">
-                        <SearchIcon />
-                    </InputAdornment>
-                    ),
-                }}
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Search products by name or category..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <Search />
+                            </InputAdornment>
+                        ),
+                    }}
                 />
             </Paper>
+
+            {/* Print Header - Only visible when printing */}
+            <Box sx={{ display: 'none' }} className="print-only">
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                    Inventory Report - {new Date().toLocaleDateString()}
+                </Typography>
+            </Box>
+
             {/* Products Table */}
             <TableContainer component={Paper}>
                 <Table>
-                     <TableHead>
-                    <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                    <TableCell>Product Name</TableCell>
-                    <TableCell>Category</TableCell>
-                    <TableCell align="center">Quantity</TableCell>
-                    <TableCell align="right">Price</TableCell>
-                    <TableCell align="center">Status</TableCell>
-                    <TableCell align="center">Quick Actions</TableCell>
-                    <TableCell align="center">Actions</TableCell>
-                    </TableRow>
+                    <TableHead>
+                        <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                            <TableCell><strong>Product Name</strong></TableCell>
+                            <TableCell><strong>Category</strong></TableCell>
+                            <TableCell align="center"><strong>Quantity</strong></TableCell>
+                            <TableCell align="right"><strong>Price</strong></TableCell>
+                            <TableCell align="center"><strong>Status</strong></TableCell>
+                            <TableCell align="center"><strong>Total Value</strong></TableCell>
+                            {hasRole(['admin', 'manager']) && (
+                                <TableCell align="center" className="no-print"><strong>Quick Stock</strong></TableCell>
+                            )}
+                            {hasRole(['admin', 'manager']) && (
+                                <TableCell align="center" className="no-print"><strong>Actions</strong></TableCell>
+                            )}
+                        </TableRow>
                     </TableHead>
-                     <TableBody>
-
-                    {filteredProducts
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((product) => (
-                          <TableRow key={product._id} hover>
+                    <TableBody>
+                        {filteredProducts
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((product) => (
+                            <TableRow key={product._id} hover>
                                 <TableCell>{product.name}</TableCell>
                                 <TableCell>{product.category}</TableCell>
                                 <TableCell align="center">
-                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => handleQuantityChange(product._id, product.quantity, -1)}
-                                        >
-                                            <RemoveIcon fontSize="small" />
-                                        </IconButton>
-                                        <Typography sx={{ mx: 2, minWidth: '40px', textAlign: 'center' }}>
-                                            {product.quantity}
-                                        </Typography>
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => handleQuantityChange(product._id, product.quantity, 1)}
-                                        >
-                                            <AddIcon fontSize="small" />
-                                        </IconButton>
-                                    </Box>
+                                    {hasRole(['admin', 'manager']) ? (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                                            <IconButton
+                                                type='button'
+                                                size="small"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleQuantityUpdate(
+                                                        product._id, 
+                                                        Math.max(0, product.quantity - 1),
+                                                        product
+                                                    );
+                                                }}
+                                                disabled={product.quantity === 0}
+                                                className="no-print"
+                                            >
+                                                <RemoveIcon fontSize="small" />
+                                            </IconButton>
+                                            <Typography>{product.quantity}</Typography>
+                                            <IconButton
+                                                type='button'
+                                                size="small"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleQuantityUpdate(
+                                                        product._id, 
+                                                        product.quantity + 1,
+                                                        product
+                                                    );
+                                                }}
+                                                className="no-print"
+                                            >
+                                                <AddIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+                                    ) : (
+                                        <Typography>{product.quantity}</Typography>
+                                    )}
                                 </TableCell>
-                                <TableCell align="right">${product.price}</TableCell>
-                                <TableCell align="center">
-                                    <Chip
-                                        label={
-                                        product.quantity === 0 
-                                            ? 'Out of Stock' 
-                                            : product.quantity <= 5 
-                                            ? `Low Stock (${product.quantity})` 
-                                            : 'In Stock'
-                                        }
-                                        color={
-                                        product.quantity === 0 
-                                            ? 'error'       
-                                            : product.quantity <= 5 
-                                            ? 'warning'    
-                                            : 'success'   
-                                        }
-                                        size="small"
-                                    />
+                                <TableCell align="right">
+                                    ${product.price?.toFixed(2) || '0.00'}
                                 </TableCell>
                                 <TableCell align="center">
-                                    <Tooltip title="Quick restock">
+                                    {getStockStatus(product.quantity)}
+                                </TableCell>
+                                <TableCell align="center">
+                                    ${((product.quantity || 0) * (product.price || 0)).toFixed(2)}
+                                </TableCell>
+                                {hasRole(['admin', 'manager']) && (
+                                    <TableCell align="center" className="no-print">
+                                        <Tooltip title="Quick restock">
+                                            <Button
+                                                type='button'
+                                                size="small"
+                                                variant="outlined"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleQuantityUpdate(
+                                                        product._id, 
+                                                        product.quantity + 10,
+                                                        product
+                                                    );
+                                                }}
+                                            >
+                                                +10
+                                            </Button>
+                                        </Tooltip>
+                                    </TableCell>
+                                )}
+                                {hasRole(['admin', 'manager']) && (
+                                    <TableCell align="center" className="no-print">
+                                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => navigate(`/dashboard/products/edit/${product._id}`)}
+                                                size="small"
+                                            >
+                                                <Edit />
+                                            </IconButton>
+                                            {hasRole('admin') && (
+                                                <IconButton
+                                                    color="error"
+                                                    onClick={() => handleDelete(product._id, product.name)}
+                                                    size="small"
+                                                >
+                                                    <Delete />
+                                                </IconButton>
+                                            )}
+                                        </Box>
+                                    </TableCell>
+                                )}
+                            </TableRow>
+                        ))}
+                        
+                        {filteredProducts.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={hasRole(['admin', 'manager']) ? 8 : 6} align="center">
+                                    <Typography variant="body2" color="text.secondary" sx={{ py: 3 }}>
+                                        {searchTerm ? 'No products found matching your search' : 'No products available'}
+                                    </Typography>
+                                    {hasRole(['admin', 'manager']) && !searchTerm && (
                                         <Button
-                                            size="small"
-                                            variant="outlined"
-                                            onClick={() => handleQuantityChange(product._id, product.quantity, 10)}
+                                            variant="contained"
+                                            startIcon={<Add />}
+                                            onClick={() => navigate('/dashboard/products/add')}
+                                            sx={{ mt: 2, backgroundColor: '#4A6B7C' }}
                                         >
-                                            +10
+                                            Add Your First Product
                                         </Button>
-                                    </Tooltip>
+                                    )}
                                 </TableCell>
-                                <TableCell align="center">
-                                    <IconButton
-                                        size="small"
-                                        color="primary"
-                                        onClick={() => navigate(`/edit-product/${product._id}`)}
-                                    >
-                                        <EditIcon fontSize="small" />
-                                    </IconButton>
-                                    <IconButton
-                                        size="small"
-                                        color="error"
-                                        onClick={() => handleDelete(product._id)}
-                                    >
-                                        <DeleteIcon fontSize="small" />
-                                    </IconButton>
-                                </TableCell>
-                          </TableRow>
-              ))}
-
+                            </TableRow>
+                        )}
                     </TableBody>
-                    {filteredProducts.length === 0 && (
-                        <TableRow>
-                            <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
-                            <Typography variant="h6" color="text.secondary">
-                                No products found
-                            </Typography>
-                            <Button
-                                variant="contained"
-                                startIcon={<AddIcon />}
-                                onClick={() => navigate('/add-product')}
-                                sx={{ mt: 2, backgroundColor: '#4A6B7C' }}
-                            >
-                                Add Your First Product
-                            </Button>
-                            </TableCell>
-                        </TableRow>
-                    )}
-
                 </Table>
+                
+                {/* Pagination */}
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
@@ -328,15 +463,45 @@ function Products() {
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
+                    className="no-print"
                 />
-
             </TableContainer>
 
+            {/* Summary Stats */}
+            <Paper sx={{ p: 2, mt: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h6">{filteredProducts.length}</Typography>
+                        <Typography variant="body2" color="text.secondary">Total Products</Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h6">
+                            {filteredProducts.reduce((sum, p) => sum + (p.quantity || 0), 0)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">Total Items</Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h6" color="error">
+                            {filteredProducts.filter(p => p.quantity === 0).length}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">Out of Stock</Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h6" color="warning.main">
+                            {filteredProducts.filter(p => p.quantity > 0 && p.quantity <= 5).length}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">Low Stock</Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h6">
+                            ${filteredProducts.reduce((sum, p) => sum + ((p.quantity || 0) * (p.price || 0)), 0).toFixed(2)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">Total Value</Typography>
+                    </Box>
+                </Box>
+            </Paper>
         </Box>
-
-    )
-    
-
-
+    );
 }
+
 export default Products;

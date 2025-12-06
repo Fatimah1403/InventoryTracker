@@ -58,7 +58,7 @@ function EditProduct() {
         price: parseFloat(formData.price),
       });
       showSuccess('Product updated successfully!');
-      navigate('/products');
+      navigate('dashboard/products');
     } catch (error) {
       setError('Failed to update product', error);
     }
@@ -139,7 +139,7 @@ function EditProduct() {
 
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-                <Button variant="outlined" onClick={() => navigate('/products')}>
+                <Button variant="outlined" onClick={() => navigate('/dashboard/products')}>
                   Cancel
                 </Button>
                 <Button type="submit" variant="contained" sx={{ backgroundColor: '#4A6B7C' }}>
