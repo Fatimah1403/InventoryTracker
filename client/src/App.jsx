@@ -10,8 +10,8 @@ import { Toaster } from "react-hot-toast";
 // Context Providers
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
-import { useThemeMode } from './context/ThemeContext';
-import { useAuth } from './context/AuthContext';
+import { useThemeMode } from './context/useThemeMode';
+import { useAuth } from './context/useAuth';
 
 // Layout
 import Layout from './components/Layout/Layout';

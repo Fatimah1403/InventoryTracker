@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Paper, Typography, Button } from '@mui/material';
 import { Construction, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 function ComingSoon({ pageName = 'This Page' }) {
     const navigate = useNavigate();

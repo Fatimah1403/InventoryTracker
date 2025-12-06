@@ -2,7 +2,8 @@ import React, { createContext, useState, useMemo } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-const ThemeContext = createContext();
+// eslint-disable-next-line react-refresh/only-export-components
+export const ThemeContext = createContext();
 
 
 export function ThemeModeProvider({ children }) {
@@ -43,3 +44,5 @@ export function ThemeModeProvider({ children }) {
     </ThemeContext.Provider>
   );
 }
+export default ThemeContext;
+

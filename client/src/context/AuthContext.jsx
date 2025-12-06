@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { setAccessToken } from '../services/api';
 
 
+
 const AuthContext = createContext({});
 let _accessToken = null; 
 
@@ -235,5 +236,5 @@ axios.interceptors.response.use(
     
 };
     
-
+export { AuthContext };
 export default AuthContext;

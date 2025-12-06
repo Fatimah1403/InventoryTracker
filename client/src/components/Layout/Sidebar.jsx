@@ -25,12 +25,12 @@ import {
 } from '@mui/icons-material';
 
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from "../../context/useAuth";
 
 function Sidebar({ mobileOpen, handleDrawerToggle, drawerWidth }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout, _hasRole } = useAuth();
+  const { user, logout, hasRole } = useAuth();
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', roles: ['admin','manager','viewer'] },

@@ -8,3 +8,4 @@ export const useThemeMode = () => {
   }
   return context;
 };
+export default useThemeMode;

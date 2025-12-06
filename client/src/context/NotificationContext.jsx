@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
-const NotificationContext = createContext();
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const NotificationContext = createContext();
 
 
 export function NotificationProvider({ children }) {

@@ -1,7 +1,7 @@
 // frontend/src/components/Layout/Header/Header.jsx
 import React from 'react';
-import { useNotifications } from "../../../context/NotificationContext";
-import { useAuth } from '../../../context/AuthContext';
+import { useNotification } from "../../../context/useNotification";
+import { useAuth } from '../../../context/useAuth';
 import { showSuccess } from "../../../utils/toast";
 import { useState } from 'react';
 import ThemeToggle from "./ThemeToggle";
@@ -73,7 +73,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Header({ onMenuClick }) {
-    const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+    const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotification();
     const { user, logout, hasRole } = useAuth();
     const navigate = useNavigate();
     const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);

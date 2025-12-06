@@ -32,10 +32,10 @@ import {
     Download as DownloadIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { productAPI, notificationAPI } from '../services/api';
 import { showSuccess, showError } from '../utils/toast';
-import { useNotifications } from '../context/NotificationContext';
+import { useNotification } from '../context/useNotification';
 import { motion } from "framer-motion";
 
 // Add print styles
@@ -57,7 +57,7 @@ const printStyles = `
 function Products() {
     const navigate = useNavigate();
     const { hasRole, user } = useAuth();
-    const { addNotification } = useNotifications();
+    const { addNotification } = useNotification();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
