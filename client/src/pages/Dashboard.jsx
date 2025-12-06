@@ -37,7 +37,7 @@ function Dashboard() {
     outOfStock: 0,
   });
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const [exchangeRates, setExchangeRates] = useState(null);
 
   useEffect(() => {

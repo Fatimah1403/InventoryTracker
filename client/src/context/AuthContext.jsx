@@ -1,11 +1,11 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { setAccessToken } from '../services/api';
 
 
 const AuthContext = createContext({});
-let accessToken = null; 
+let _accessToken = null; 
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true; 
@@ -48,7 +48,7 @@ axios.interceptors.response.use(
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [_error, setError] = useState(null);
 
     
     const login = async (email, password) => {
@@ -235,13 +235,5 @@ axios.interceptors.response.use(
     
 };
     
-// Move useAuth outside of AuthProvider
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
-};
 
 export default AuthContext;

@@ -30,7 +30,7 @@ import { useAuth } from '../../context/AuthContext';
 function Sidebar({ mobileOpen, handleDrawerToggle, drawerWidth }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout, hasRole } = useAuth();
+  const { user, logout, _hasRole } = useAuth();
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', roles: ['admin','manager','viewer'] },

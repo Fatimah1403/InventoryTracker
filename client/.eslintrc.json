@@ -1,0 +1,25 @@
+{
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:security/recommended"
+    ],
+    "plugins": ["react", "security", "react-hooks"],
+    "rules": {
+      "security/detect-object-injection": "warn",
+      "security/detect-unsafe-regex": "error",
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "react/no-dangerously-set-inner-html": "error",
+      "react/no-unescaped-entities": "error"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+  }

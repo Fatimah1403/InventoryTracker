@@ -1,14 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { useContext } from 'react';
 const NotificationContext = createContext();
 
-export const useNotifications = () => {
-  const context = useContext(NotificationContext);
-  if (!context) {
-      throw new Error('useNotification must be used within a NotificationProvider');
-  }
-  return context;
-};
+
 export function NotificationProvider({ children }) {
     const [notifications, setNotifications] = useState(() => {
         // Load from local storage wen app starts
