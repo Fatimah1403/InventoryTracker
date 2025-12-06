@@ -2,9 +2,9 @@ name: "Trivy Container Security"
 
 on:
   push:
-    branches: [ main, sec764-w1 ]
+    branches: [ "**" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "**" ]
 
 jobs:
   scan-backend:
