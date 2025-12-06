@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # Copy the rest of the server files
 COPY . .
