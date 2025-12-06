@@ -1,5 +1,5 @@
 # Use Node.js for ARM64 (M3 Mac compatible)
-FROM --platform=linux/arm64 node:18-alpine
+FROM --platform=linux/arm64 node:20-alpine
 
 # Set working directory
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm install --only=production
+RUN npm ci
 
 # Copy the rest of the server files
 COPY . .
