@@ -2,7 +2,7 @@ name: ZAP Security Scan
 
 on:
   push:
-    branches: ["**"]   
+    branches: ["**"]
   pull_request:
     branches: ["**"]
 
@@ -12,21 +12,22 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # ZAP Baseline Scan
+      - name: Create reports folder
+        run: mkdir -p zap_reports
+
       - name: ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: 'https://inventory-tracker-frontend-ten.vercel.app'
-          cmd_options: '-r zap-report.html'
+          cmd_options: '-r zap_reports/zap-report.html'
           fail_action: false
           rules_file_name: '.zap/rules.tsv'
 
-      # Upload ZAP Report Artifact
       - name: Upload ZAP Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: zap-report.html
+          path: zap_reports/*.html
