@@ -19,6 +19,7 @@ jobs:
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: 'https://inventory-tracker-frontend-ten.vercel.app'
+          cmd_options: '-r zap-report.html'
           fail_action: false
           rules_file_name: '.zap/rules.tsv'
 
@@ -28,4 +29,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: zap-report
-          path: '**/*.html'
+          path: zap-report.html
