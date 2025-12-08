@@ -14,20 +14,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create reports folder
-        run: mkdir -p zap_reports
-
       - name: ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: 'https://inventory-tracker-frontend-ten.vercel.app'
-          cmd_options: '-r zap_reports/zap-report.html'
           fail_action: false
-          rules_file_name: '.zap/rules.tsv'
+
+      - name: Move Report to Folder
+        if: always()
+        run: |
+          mkdir -p zap_reports
+          mv report_*.* zap_reports/ || true
+          ls -la zap_reports/
 
       - name: Upload ZAP Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: zap_reports/*.html
+          path: zap_reports/
