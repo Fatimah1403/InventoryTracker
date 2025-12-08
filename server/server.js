@@ -5,6 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 
 
 // Import routes
@@ -42,10 +43,12 @@ app.use(cors({
 
 // Middleware
 app.use(cookieParser());
+app.disable('x-powered-by');
 // app.use(cors(corsOptions)); 
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
 app.use(morgan("dev"));
+app.use(helmet());
 
 
 app.use((req, res, next) => {

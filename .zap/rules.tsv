@@ -1,0 +1,4 @@
+# This file tells ZAP what to ignore
+IGNORE	10027	# Ignore suspicious comments
+IGNORE	10015	# Ignore cache warnings
+FAIL	40018	# Always fail on SQL injection
