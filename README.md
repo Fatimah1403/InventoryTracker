@@ -1,30 +1,28 @@
-# Inventory Tracker - Secure Development Project
-
-A full-stack inventory management system with comprehensive security analysis for  Secure Software Developments .
+# Inventory Tracker 
 
 [![Security Scan](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/codeql-analysis.yml)
 [![Container Security](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/trivy-security.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/trivy-security.yml)
 [![Dependency Check](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/dependency-check.yml)
 
-## 🚀 Live Demo
+##  Live Demo
 
 - **Frontend**: [https://inventory-tracker-frontend-ten.vercel.app](https://inventory-tracker-frontend-ten.vercel.app)
 - **Backend API**: [https://inventory-tracker-kuou.onrender.com](https://inventory-tracker-kuou.onrender.com)
 - **Documentation**: [CS763 Security Analysis](./CS763_DOCS/)
 
-## 📋 Project Overview
+##  Project Overview
 
-This inventory management system was developed as a functional web application and is being enhanced with comprehensive security features as part of CS763 coursework. The project demonstrates the transition from a feature-complete but security-vulnerable application to a properly secured system.
+A secure full-stack inventory management system built with React, Node.js, Express, MongoDB, and Redis. The platform enables product tracking, role-based access control, and automated security validation using a DevSecOps pipeline.
 
 ### Current Status
-- ✅ Full CRUD functionality for inventory management
-- ✅ Real-time stock tracking and notifications
-- ✅ Containerized with Docker
-- ✅ Automated security scanning with GitHub Actions
-- ⚠️ Authentication system pending (Assignment 3)
-- ⚠️ Security vulnerabilities identified for analysis
+- Full CRUD functionality for inventory management
+- Real-time stock tracking and notifications
+- Containerized with Docker
+- Automated security scanning with GitHub Actions
+- Authentication system pending (Assignment 3)
+-  Security vulnerabilities identified for analysis
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
 - **Framework**: React 18 with Vite
@@ -47,7 +45,7 @@ This inventory management system was developed as a functional web application a
 - **Security Scanning**: CodeQL, Trivy, npm audit
 - **Deployment**: Vercel (Frontend), Render (Backend)
 
-## 🔧 Installation
+##  Installation
 
 ### Prerequisites
 - Node.js v16+ (v18 recommended)
@@ -61,7 +59,6 @@ This inventory management system was developed as a functional web application a
 ```bash
 git clone https://github.com/Fatimah1403/InventoryTracker.git
 cd InventoryTracker
-git checkout sec764-w1  # Current development branch
 ```
 
 2. **Backend Setup**
@@ -94,7 +91,7 @@ npm run dev
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:5001
 
-## 🐳 Docker Deployment
+##  Docker Deployment
 
 ### Build and run with Docker Compose:
 ```bash
@@ -112,11 +109,11 @@ docker-compose up --build
 - MongoDB Atlas for database (external)
 - Environment variables managed via .env files
 
-## 🔒 Security Features & Analysis
+##  Security Features & Analysis
 
 ### Current Security Status
 
-#### ✅ Implemented
+#### Implemented
 - Environment variable management
 - HTTPS in production (Vercel/Render)
 - Basic input validation (client-side)
@@ -124,7 +121,7 @@ docker-compose up --build
 - Container security scanning
 - Dependency vulnerability monitoring
 
-#### ⚠️ Identified Vulnerabilities 
+####  Identified Vulnerabilities 
 - **No Authentication System** - All endpoints publicly accessible
 - **Missing Authorization** - No role-based access control
 - **Unprotected API Endpoints** - CRUD operations without auth
@@ -152,7 +149,7 @@ Three GitHub Actions workflows provide continuous security monitoring:
    - Secret scanning in codebase
    - License compliance checking
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 inventory_tracker/
@@ -183,31 +180,31 @@ inventory_tracker/
 └── README.md             # This file
 ```
 
-## 🚀 Features
+##  Features
 
 ### Core Functionality
-- ✅ **Product Management**: Complete CRUD operations
-- ✅ **Real-time Tracking**: Live inventory updates
-- ✅ **Smart Notifications**: Low stock and out-of-stock alerts
-- ✅ **Email Alerts**: Automated notifications via EmailJS
-- ✅ **Search & Filter**: Find products by name/category
-- ✅ **Bulk Operations**: Quick restock functionality
-- ✅ **Data Export**: CSV export for reports
-- ✅ **Responsive Design**: Mobile-friendly interface
-- ✅ **Dashboard Analytics**: Visual charts and statistics
+-  **Product Management**: Complete CRUD operations
+-  **Real-time Tracking**: Live inventory updates
+-  **Smart Notifications**: Low stock and out-of-stock alerts
+-  **Email Alerts**: Automated notifications via EmailJS
+-  **Search & Filter**: Find products by name/category
+-  **Bulk Operations**: Quick restock functionality
+-  **Data Export**: CSV export for reports
+-  **Responsive Design**: Mobile-friendly interface
+-  **Dashboard Analytics**: Visual charts and statistics
 
 ### Planned Security Enhancements
-- 🔐 JWT Authentication system
-- 👥 User registration and login
-- 🔑 Password hashing with bcrypt
-- 🛡️ Protected API routes
-- 📝 Role-based access control (RBAC)
-- 🚦 Rate limiting
-- 🔒 Security headers (Helmet.js)
-- ✅ Input validation and sanitization
-- 📊 Audit logging
+-  JWT Authentication system
+-  User registration and login
+-  Password hashing with bcrypt
+-  Protected API routes
+-  Role-based access control (RBAC)
+-  Rate limiting
+-  Security headers (Helmet.js)
+-  Input validation and sanitization
+-  Audit logging
 
-## 🧪 Testing
+##  Testing
 
 ### Manual Testing
 ```bash
@@ -231,7 +228,7 @@ docker run --rm -v $(pwd):/src \
   aquasecurity/trivy fs /src
 ```
 
-## 📊 API Documentation
+##  API Documentation
 
 ### Base URL
 - Development: `http://localhost:5001`
@@ -267,7 +264,7 @@ fetch('http://localhost:5001/api/products', {
 });
 ```
 
-## 🐛 Known Issues & Troubleshooting
+##  Known Issues & Troubleshooting
 
 ### Common Issues
 
@@ -296,55 +293,14 @@ fetch('http://localhost:5001/api/products', {
    - Verify frontend URL in backend CORS config
    - Check `VITE_API_URL` in frontend `.env`
 
-## 🤝 Contributing
-
-Suggestions are welcome for the continuation of this project.
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-## 📈 Development Roadmap
-
-### Phase 1: Security Analysis (Current)
-- ✅ Vulnerability identification
-- ✅ Threat modeling setup
-- ✅ Security automation implementation
-
-### Phase 2: Authentication Implementation
-- [ ] JWT token system
-- [ ] User management
-- [ ] Session handling
-- [ ] Password security
-
-### Phase 3: Security Hardening
-- [ ] Input validation
-- [ ] Rate limiting
-- [ ] Security headers
-- [ ] CSRF protection
-
-### Phase 4: Testing & Verification
-- [ ] OWASP ZAP scanning
-- [ ] Penetration testing
-- [ ] Security audit
-- [ ] Performance testing
-
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - [Material-UI](https://mui.com/) - React component library
 - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Cloud database
 - [OWASP](https://owasp.org/) - Security best practices
-- [GitHub Security](https://github.com/features/security) - Security tools
-- Prof. Yuting Zhang - Boston University
+- [GitHub Security](https://github.com/features/security) - Security tools- Prof. Yuting Zhang - Boston University
 
-## 📞 Contact
+##  Contact
 
 **Name**: Fatimah Hassan  
 **GitHub**: [@Fatimah1403](https://github.com/Fatimah1403)  
