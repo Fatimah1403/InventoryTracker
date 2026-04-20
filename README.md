@@ -4,16 +4,19 @@
 [![ZAP Security](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/zap.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/zap.yml)
 [![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=Fatimah1403_InventoryTracker&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Fatimah1403_InventoryTracker)
 
-##  Live Demo
+## Live Demo
+
 - **Frontend**: [https://inventory-tracker-frontend-ten.vercel.app](https://inventory-tracker-frontend-ten.vercel.app)
 - **Backend API**: [https://inventory-tracker-kuou.onrender.com](https://inventory-tracker-kuou.onrender.com)
 
-##  Project Overview
-A comprehensive inventory management system developed for CS763 Secure Software Development, demonstrating the transformation from a vulnerable application to a fully secured system with enterprise-grade security features.
+## Project Overview
+
+A comprehensive inventory management system developed demonstrating the transformation from a vulnerable application to a fully secured system with enterprise-grade security features.
 
 ## 🔒 Security Implementation Summary
 
 ### Authentication & Authorization ✅
+
 - **JWT Authentication**: Dual-token system (15min access, 7-day refresh)
 - **Password Security**: Bcrypt hashing with 12 salt rounds
 - **Role-Based Access Control**: Admin, Manager, Viewer roles
@@ -21,12 +24,14 @@ A comprehensive inventory management system developed for CS763 Secure Software 
 - **Account Security**: Lockout after 5 failed attempts (30min)
 
 ### Security Testing & Validation ✅
+
 - **SAST**: CodeQL, SonarCloud (0 vulnerabilities, 0 bugs)
 - **DAST**: OWASP ZAP automated scanning via GitHub Actions
 - **Container Security**: Trivy scanning for Docker images
 - **Dependency Scanning**: npm audit, OWASP Dependency Check
 
 ### DevSecOps Pipeline ✅
+
 - **Automated Security Scanning**: GitHub Actions workflows
 - **Continuous Monitoring**: Every push triggers security scans
 - **Security Reports**: Automated artifact generation
@@ -34,21 +39,25 @@ A comprehensive inventory management system developed for CS763 Secure Software 
 ## Technology Stack
 
 ### Backend
+
 - Node.js 18 LTS, Express.js 4.x, MongoDB Atlas
 - JWT (jsonwebtoken ^9.0.2), Bcrypt (^5.1.1)
 - Redis Session Management, Nodemailer
 
 ### Frontend
+
 - React 18 with Vite, Material-UI v5
 - Protected Routes, JWT Token Management
 - Responsive Design
 
-##  Installation
+## Installation
 
 ### Prerequisites
+
 - Node.js v18+, MongoDB Atlas account, Redis server
 
 ### Quick Start
+
 ```bash
 # Clone repository
 git clone https://github.com/Fatimah1403/InventoryTracker.git
@@ -67,6 +76,7 @@ npm run dev
 ```
 
 ### Test Credentials
+
 - **Admin**: admin@example.com / Admin123!
 - **Manager**: manager@example.com / Manager123!
 - **Viewer**: viewer@example.com / Viewer123!
@@ -74,17 +84,20 @@ npm run dev
 ## 📊 Security Test Results
 
 ### SAST (SonarCloud)
+
 - **Vulnerabilities**: 0
 - **Security Hotspots**: 19 (reviewed)
 - **Code Coverage**: A rating
 
 ### DAST (OWASP ZAP)
+
 - **High Risk**: 0
 - **Medium Risk**: 3 (configuration issues)
 - **Low Risk**: 4 (headers)
 - **Authentication**: Successfully tested JWT implementation
 
 ## 📁 Project Structure
+
 ```
 InventoryTracker/
 ├── .github/
@@ -258,24 +271,27 @@ InventoryTracker/
 ## 🔐 API Security
 
 ### Protected Endpoints
+
 All API endpoints require JWT authentication except login/register.
 
-| Method | Endpoint | Auth Required | Role |
-|--------|----------|--------------|------|
-| POST | /api/auth/login | No | - |
-| GET | /api/products | Yes | Viewer+ |
-| POST | /api/products | Yes | Manager+ |
-| DELETE | /api/products/:id | Yes | Admin |
+| Method | Endpoint          | Auth Required | Role     |
+| ------ | ----------------- | ------------- | -------- |
+| POST   | /api/auth/login   | No            | -        |
+| GET    | /api/products     | Yes           | Viewer+  |
+| POST   | /api/products     | Yes           | Manager+ |
+| DELETE | /api/products/:id | Yes           | Admin    |
 
 ## 📈 Security Improvements
 
 ### Before
+
 - No authentication
 - All APIs exposed
 - No password hashing
 - No rate limiting
 
-### After 
+### After
+
 - ✅ JWT authentication with refresh tokens
 - ✅ Bcrypt password hashing
 - ✅ Rate limiting on sensitive endpoints
@@ -283,9 +299,11 @@ All API endpoints require JWT authentication except login/register.
 - ✅ 0 critical vulnerabilities
 
 ## 🤝 Contributors
+
 **Fatimah Hassan** - Boston University Metropolitan College
 
 ## 📄 License
+
 MIT License - See [LICENSE](LICENSE) file for details
 
 ---
