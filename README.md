@@ -9,24 +9,25 @@
 - **Backend API**: [https://inventory-tracker-kuou.onrender.com](https://inventory-tracker-kuou.onrender.com)
 
 ##  Project Overview
-A comprehensive inventory management system developed for CS763 Secure Software Development, demonstrating the transformation from a vulnerable application to a fully secured system with enterprise-grade security features.
+A secure inventory management platform implementing authentication, authorization, and modern application security practices. The system demonstrates production-grade security controls integrated into a full-stack application.
 
-## 🔒 Security Implementation Summary
 
-### Authentication & Authorization ✅
+##  Security Implementation Summary
+
+### Authentication & Authorization 
 - **JWT Authentication**: Dual-token system (15min access, 7-day refresh)
 - **Password Security**: Bcrypt hashing with 12 salt rounds
 - **Role-Based Access Control**: Admin, Manager, Viewer roles
 - **Session Management**: Redis-backed secure token storage
 - **Account Security**: Lockout after 5 failed attempts (30min)
 
-### Security Testing & Validation ✅
+### Security Testing & Validation 
 - **SAST**: CodeQL, SonarCloud (0 vulnerabilities, 0 bugs)
 - **DAST**: OWASP ZAP automated scanning via GitHub Actions
 - **Container Security**: Trivy scanning for Docker images
 - **Dependency Scanning**: npm audit, OWASP Dependency Check
 
-### DevSecOps Pipeline ✅
+### DevSecOps Pipeline 
 - **Automated Security Scanning**: GitHub Actions workflows
 - **Continuous Monitoring**: Every push triggers security scans
 - **Security Reports**: Automated artifact generation
@@ -255,7 +256,7 @@ InventoryTracker/
 └── sonar-project.properties          # SonarCloud configuration
 ```
 
-## 🔐 API Security
+## API Security
 
 ### Protected Endpoints
 All API endpoints require JWT authentication except login/register.
@@ -267,25 +268,7 @@ All API endpoints require JWT authentication except login/register.
 | POST | /api/products | Yes | Manager+ |
 | DELETE | /api/products/:id | Yes | Admin |
 
-## 📈 Security Improvements
-
-### Before
-- No authentication
-- All APIs exposed
-- No password hashing
-- No rate limiting
-
-### After 
-- ✅ JWT authentication with refresh tokens
-- ✅ Bcrypt password hashing
-- ✅ Rate limiting on sensitive endpoints
-- ✅ Automated security scanning
-- ✅ 0 critical vulnerabilities
-
-## 🤝 Contributors
-**Fatimah Hassan** - Boston University Metropolitan College
-
-## 📄 License
-MIT License - See [LICENSE](LICENSE) file for details
-
----
+##  Contributor
+**Fatimah Hassan** 
+Fatimah Hassan
+GitHub: https://github.com/Fatimah1403
