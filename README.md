@@ -72,7 +72,7 @@ npm run dev
 - **Manager**: manager@example.com / Manager123!
 - **Viewer**: viewer@example.com / Viewer123!
 
-## 📊 Security Test Results
+##  Security Test Results
 
 ### SAST (SonarCloud)
 - **Vulnerabilities**: 0
@@ -85,7 +85,7 @@ npm run dev
 - **Low Risk**: 4 (headers)
 - **Authentication**: Successfully tested JWT implementation
 
-## 📁 Project Structure
+## Project Structure
 ```
 InventoryTracker/
 ├── .github/
@@ -270,5 +270,4 @@ All API endpoints require JWT authentication except login/register.
 
 ##  Contributor
 **Fatimah Hassan** 
-Fatimah Hassan
 GitHub: https://github.com/Fatimah1403
