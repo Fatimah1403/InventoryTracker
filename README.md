@@ -11,7 +11,7 @@
 
 ## Project Overview
 
-A comprehensive inventory management system developed demonstrating the transformation from a vulnerable application to a fully secured system with enterprise-grade security features.
+A comprehensive inventory management system developed for CS763 Secure Software Development, demonstrating the transformation from a vulnerable application to a fully secured system with enterprise-grade security features.
 
 ## 🔒 Security Implementation Summary
 
