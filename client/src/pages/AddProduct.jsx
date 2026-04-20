@@ -28,9 +28,9 @@ function AddProduct() {
   });
 
   // Snackbar + Error states
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [_openSnackbar, setOpenSnackbar] = useState(false);
+  const [_snackbarMessage, setSnackbarMessage] = useState('');
+  const [_snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [loading, setLoading] = useState(false);
 
   // Handle form field updates

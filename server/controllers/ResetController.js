@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { Buffer } from "buffer";
 import redisClient from "../config/redisClient.js";
 import User from "../models/UserModel.js";
 import sendEmail from "../utils/sendEmail.js";
@@ -56,8 +57,10 @@ export const resetPassword = async (req, res) => {
         if (!storedToken)
             return res.status(400).json({ message: "Invalid or expired token" });
 
-        if (storedToken !== token)
+        const isValidToken = crypto.timingSafeEqual(Buffer.from(storedToken), Buffer.from(token));
+        if (!isValidToken) {
             return res.status(400).json({ message: "Invalid token" });
+        }
 
         const user = await User.findById(userId).select("+password");
         user.password = newPassword;
@@ -75,10 +78,14 @@ export const verifyResetToken = async (req, res) => {
     try {
         const { userId, token } = req.params;
 
-        const resetToken = await ResetToken.findOne({ userId, token });
+        const storedToken = await redisClient.get(`reset:${userId}`);
 
-        if (!resetToken) {
+        if (!storedToken) {
             return res.status(400).json({ message: "Invalid or expired token" });
+        }
+        const isValidToken = crypto.timingSafeEqual(Buffer.from(storedToken), Buffer.from(token));
+        if (!isValidToken) {
+            return res.status(400).json({ message: "Invalid token" });
         }
 
         return res.status(200).json({ message: "Valid token" });

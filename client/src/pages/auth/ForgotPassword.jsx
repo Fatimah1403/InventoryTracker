@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/useAuth';
 import {
     Container,
     Paper,
@@ -20,6 +20,7 @@ import {
 
 const ForgotPassword = () => {
     const { forgotPassword } = useAuth();
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
@@ -71,6 +72,11 @@ const ForgotPassword = () => {
             setMessage("If this email is registered, we will send a reset link.");
             setEmailSent(true);
             return;
+        }
+        if (result.error?.includes("expired")) {
+            navigate('/forgot-password', { 
+                state: { message: 'Your reset link expired. Request a new one.' } 
+            });
         }
         
         

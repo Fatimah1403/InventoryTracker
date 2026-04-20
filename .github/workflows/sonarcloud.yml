@@ -1,0 +1,58 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0   # Required for better analysis
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Install backend dependencies
+      - name: Install backend dependencies
+        working-directory: ./server
+        run: npm install
+
+      # Run backend tests (optional)
+      - name: Run backend tests
+        working-directory: ./server
+        run: |
+          npm test -- --coverage || true
+        continue-on-error: true
+
+      # Install frontend dependencies
+      - name: Install frontend dependencies
+        working-directory: ./client
+        run: npm install
+
+      # Run frontend tests (optional)
+      - name: Run frontend tests
+        working-directory: ./client
+        run: |
+          npm test -- --coverage --watchAll=false || true
+        continue-on-error: true
+
+      # SonarCloud Scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=Fatimah1403_InventoryTracker
+            -Dsonar.organization=fatimah1403

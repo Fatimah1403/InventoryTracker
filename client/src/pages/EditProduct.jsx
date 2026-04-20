@@ -27,10 +27,11 @@ function EditProduct() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+  
+ 
   useEffect(() => {
     fetchProduct();
-  }, [id]);
+  }, [id,]);
 
   const fetchProduct = async () => {
     try {

@@ -1,10 +1,10 @@
-import React, { createContext, useState, useMemo, useContext } from "react";
+import React, { createContext, useState, useMemo } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-const ThemeContext = createContext();
+// eslint-disable-next-line react-refresh/only-export-components
+export const ThemeContext = createContext();
 
-export const useThemeMode = () => useContext(ThemeContext);
 
 export function ThemeModeProvider({ children }) {
   const [mode, setMode] = useState("light");
@@ -44,3 +44,5 @@ export function ThemeModeProvider({ children }) {
     </ThemeContext.Provider>
   );
 }
+export default ThemeContext;
+

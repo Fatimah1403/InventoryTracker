@@ -4,11 +4,11 @@ name: "CodeQL Security Analysis"
 on:
   # Run when code is pushed to these branches
   push:
-    branches: [ main, sec764-w1 ]
+    branches: [ "**" ]
   
   # Run when a pull request targets these branches
   pull_request:
-    branches: [ main ]
+    branches: [ "**" ]
   
   # Run on a schedule (every Monday at 2 AM)
   schedule:

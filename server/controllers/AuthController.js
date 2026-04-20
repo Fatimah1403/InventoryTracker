@@ -1,8 +1,6 @@
 import jwt from "jsonwebtoken"
 import User from "../models/UserModel.js"
-import bcrypt from "bcrypt";
 import crypto from "crypto";
-import sendEmail from "../utils/sendEmail.js";
 import redisClient from "../config/redisClient.js"; 
 
 
@@ -87,7 +85,7 @@ export const loginUser = async (req, res) => {
     const jti = crypto.randomUUID();
     const refreshToken = generateRefreshToken(user, jti);
 
-    await redisClient.setEx(`refresh:${jti}`, 7 * 24 * 3600, user._id.toString());
+    await storeRefreshToken(user._id, refreshToken);
 
     setRefreshCookie(res, refreshToken);
 
@@ -153,7 +151,7 @@ export const logoutUser = async (req, res) => {
         res.clearCookie("refreshToken", { path: "/" });
         return res.json({ message: "Logged out" });
 
-    } catch (err) {
+    } catch {
         return res.status(500).json({ message: "Logout error" });
     }
 };
