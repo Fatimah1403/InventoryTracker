@@ -6,30 +6,30 @@ A full-stack inventory management system with comprehensive security implementat
 [![Container Security](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/trivy-security.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/trivy-security.yml)
 [![Dependency Check](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/dependency-check.yml)
 
-## 🚀 Live Demo
+##  Live Demo
 
 - **Frontend**: [https://inventory-tracker-frontend-ten.vercel.app](https://inventory-tracker-frontend-ten.vercel.app)
 - **Backend API**: [https://inventory-tracker-kuou.onrender.com](https://inventory-tracker-kuou.onrender.com)
 
-## 📋 Project Overview
+##  Project Overview
 
-This inventory management system demonstrates the evolution from a feature-complete but security-vulnerable application to a properly secured system with comprehensive authentication, encryption, and security controls.
+A secure full-stack inventory management system built with React, Node.js, Express, MongoDB, and Redis. The platform enables product tracking, role-based access control, and automated security validation using a DevSecOps pipeline.
 
 ### Current Security Status 
-- ✅ **JWT Authentication** with refresh tokens (15min access, 7-day refresh)
-- ✅ **Bcrypt Password Hashing** with 12 salt rounds
-- ✅ **Redis Session Management** for secure token storage
-- ✅ **Role-Based Access Control** (Admin, Manager, Viewer)
-- ✅ **Rate Limiting** on sensitive endpoints
-- ✅ **Account Lockout** after 5 failed attempts
-- ✅ **Secure Password Reset** with time-limited tokens
-- ✅ **HttpOnly Cookies** for refresh token storage
-- ✅ **Protected API Endpoints** with auth middleware
-- ✅ **Email Notifications** via Nodemailer
-- ✅ **Containerized Deployment** with Docker
-- ✅ **Automated Security Scanning** with GitHub Actions
+- **JWT Authentication** with refresh tokens (15min access, 7-day refresh)
+-  **Bcrypt Password Hashing** with 12 salt rounds
+-  **Redis Session Management** for secure token storage
+-  **Role-Based Access Control** (Admin, Manager, Viewer)
+-  **Rate Limiting** on sensitive endpoints
+-  **Account Lockout** after 5 failed attempts
+-  **Secure Password Reset** with time-limited tokens
+-  **HttpOnly Cookies** for refresh token storage
+-  **Protected API Endpoints** with auth middleware
+-  **Email Notifications** via Nodemailer
+-  **Containerized Deployment** with Docker
+-  **Automated Security Scanning** with GitHub Actions
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
 - **Framework**: React 18 with Vite
@@ -59,7 +59,7 @@ This inventory management system demonstrates the evolution from a feature-compl
 - **Security Scanning**: CodeQL, Trivy, npm audit
 - **Deployment Security**: HTTPS (Vercel/Render)
 
-## 🔧 Installation
+##  Installation
 
 ### Prerequisites
 - Node.js v16+ (v18 recommended)
@@ -144,15 +144,15 @@ docker-compose up --build
 # Backend: http://localhost:5001
 ```
 
-## 🔒 Security Features Implementation
+##  Security Features Implementation
 
-### Phase 1: Security Analysis ✅
+### Phase 1: Security Analysis 
 - Vulnerability identification
 - Threat modeling with STRIDE
 - Attack tree analysis
 - Security automation setup
 
-### Phase 2: Authentication System ✅
+### Phase 2: Authentication System 
 - **JWT Token System**
   - Short-lived access tokens (15 minutes)
   - Long-lived refresh tokens (7 days)
@@ -168,7 +168,7 @@ docker-compose up --build
   - Automatic token refresh
   - Secure logout with token invalidation
 
-### Phase 3: Access Control ✅
+### Phase 3: Access Control 
 - **Role-Based Access Control (RBAC)**
   - Admin: Full system access
   - Manager: Inventory management
@@ -182,7 +182,7 @@ docker-compose up --build
   - Password reset: 3 requests per 15 minutes
   - API endpoints: 100 requests per hour
 
-### Phase 4: Security Hardening ✅
+### Phase 4: Security Hardening 
 - **Account Security**
   - Account lockout after failed attempts
   - Time-based lockout (30 minutes)
@@ -196,7 +196,7 @@ docker-compose up --build
   - Passwords never returned in responses
   - Secure error messages
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 InventoryTracker/
@@ -252,7 +252,7 @@ InventoryTracker/
 └── README.md                   # This file
 ```
 
-## 🔐 API Documentation
+##  API Documentation
 
 ### Authentication Endpoints
 
@@ -285,7 +285,7 @@ InventoryTracker/
 const response = await fetch('http://localhost:5001/api/auth/login', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  credentials: 'include', // Important for cookies
+  credentials: 'include', 
   body: JSON.stringify({
     email: 'admin@example.com',
     password: 'Admin123!'
@@ -302,7 +302,7 @@ const products = await fetch('http://localhost:5001/api/products', {
 });
 ```
 
-## 🧪 Security Testing
+##  Security Testing
 
 ### Automated Security Scans
 ```bash
@@ -332,7 +332,7 @@ done
 # Refresh token automatically renews it
 ```
 
-## 📊 Security Metrics
+##  Security Metrics
 
 ### Performance Impact
 | Feature | Overhead | Notes |
@@ -350,30 +350,30 @@ done
 - **Rate Limiting**: All sensitive endpoints
 - **Input Validation**: All user inputs validated
 
-## 🚀 Features
+##  Features
 
 ### Core Functionality
-- ✅ **Product Management**: Complete CRUD operations
-- ✅ **Real-time Tracking**: Live inventory updates
-- ✅ **Smart Notifications**: Low stock and out-of-stock alerts
-- ✅ **Email Alerts**: Automated notifications via Nodemailer
-- ✅ **Search & Filter**: Find products by name/category
-- ✅ **Bulk Operations**: Quick restock functionality
-- ✅ **Data Export**: CSV export for reports
-- ✅ **Responsive Design**: Mobile-friendly interface
-- ✅ **Dashboard Analytics**: Visual charts and statistics
+-  **Product Management**: Complete CRUD operations
+-  **Real-time Tracking**: Live inventory updates
+-  **Smart Notifications**: Low stock and out-of-stock alerts
+-  **Email Alerts**: Automated notifications via Nodemailer
+-  **Search & Filter**: Find products by name/category
+-  **Bulk Operations**: Quick restock functionality
+-  **Data Export**: CSV export for reports
+-  **Responsive Design**: Mobile-friendly interface
+-  **Dashboard Analytics**: Visual charts and statistics
 
 ### Security Features
-- 🔐 **JWT Authentication**: Secure token-based auth
-- 🔑 **Password Hashing**: Bcrypt encryption
-- 🛡️ **Protected Routes**: Role-based access
-- 📝 **Session Management**: Redis-based sessions
-- 🚦 **Rate Limiting**: Brute force protection
-- 🔒 **Secure Headers**: CORS configuration
-- ✅ **Input Validation**: Server-side validation
-- 📊 **Audit Trail**: Authentication logging
+-  **JWT Authentication**: Secure token-based auth
+-  **Password Hashing**: Bcrypt encryption
+-  **Protected Routes**: Role-based access
+-  **Session Management**: Redis-based sessions
+-  **Rate Limiting**: Brute force protection
+-  **Secure Headers**: CORS configuration
+-  **Input Validation**: Server-side validation
+-  **Audit Trail**: Authentication logging
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/Enhancement`)
@@ -381,9 +381,9 @@ done
 4. Push to branch (`git push origin feature/Enhancement`)
 5. Open Pull Request
 
-## 📈 Development Roadmap
+##  Development Roadmap
 
-### Completed ✅
+### Completed 
 - Security vulnerability analysis
 - JWT authentication implementation
 - Password security with bcrypt
@@ -401,25 +401,18 @@ done
 - [ ] Audit logging system
 - [ ] Security dashboard
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - [Material-UI](https://mui.com/) - React component library
 - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Cloud database
 - [Redis](https://redis.io/) - In-memory data store
 - [JWT.io](https://jwt.io/) - JWT debugging
 - [OWASP](https://owasp.org/) - Security best practices
-- [GitHub Security](https://github.com/features/security) - Security tools
-- Prof. Yuting Zhang - Boston University Metropolitan College
-
-## 📞 Contact
+- [GitHub Security](https://github.com/features/security) - 
 
 **Name**: Fatimah Hassan  
 **Project Link**: [https://github.com/Fatimah1403/InventoryTracker](https://github.com/Fatimah1403/InventoryTracker)
 
 ---
 
-*This project demonstrates the implementation of comprehensive security features using industry-standard cryptographic APIs and best practices for web application security.*
+*
