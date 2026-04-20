@@ -1,6 +1,6 @@
 # Inventory Tracker - Secure Development Project
 
-A full-stack inventory management system with comprehensive security implementation for CS763 Secure Software Development.
+A full-stack inventory management system with comprehensive security implementation Secure Software Development.
 
 [![Security Scan](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/codeql-analysis.yml)
 [![Container Security](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/trivy-security.yml/badge.svg)](https://github.com/Fatimah1403/InventoryTracker/actions/workflows/trivy-security.yml)
