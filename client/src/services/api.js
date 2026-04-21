@@ -70,11 +70,7 @@ api.interceptors.response.use(
         
         return Promise.reject(error);
     }
-);    response => response,
-    error => {
-      console.error('API Error:', error);
-      return Promise.reject(error);
-    }
+);   
   
 
 // Product APIs
