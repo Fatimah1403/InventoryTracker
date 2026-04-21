@@ -17,29 +17,29 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 dotenv.config();
 const app = express();
 
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     const allowedOrigins = [
-//       'http://localhost:5173',
-//       'http://localhost:5001',
-//       'https://inventory-tracker-frontend-ten.vercel.app'
-//     ];
-//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true, 
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-//   allowedHeaders: ['Content-Type', "Authorization"],
-//   exposedHeaders: ['set-cookie'],
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:5001',
+      'https://inventory-tracker-frontend-ten.vercel.app'
+    ];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', "Authorization"],
+  exposedHeaders: ['set-cookie'],
 
-// };
-app.use(cors({
-  origin: "http://localhost:5173",   
-  credentials: true                 
-}));
+};
+// app.use(cors({
+//   origin: "http://localhost:5173",   
+//   credentials: true                 
+// }));
 
 // Middleware
 app.use(cookieParser());
@@ -92,8 +92,8 @@ const startServer = async () => {
   try {
     await connectDB();
     app.listen(PORT, () => {
-      console.log(`✅ Server started on port ${PORT}`);
-      console.log(`📡 API available at http://localhost:${PORT}`);
+      console.log(` Server started on port ${PORT}`);
+      console.log(` API available at http://localhost:${PORT}`);
     });
   } catch (error) {
       console.error("Failed to start server:", error);
