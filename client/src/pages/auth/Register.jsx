@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
+import { showSuccess, showError } from "../../utils/toast";
 import {
     Container,
     Paper,
@@ -102,6 +103,7 @@ const Register = () => {
         e.preventDefault();
         
         if (!validateForm()) {
+            showError('Please fix the highlighted form errors');
             return;
         }
         
@@ -115,11 +117,13 @@ const Register = () => {
         });
 
         if (result.success) {
+            showSuccess('Registration successful!');
             navigate('/', { 
                 state: { message: 'Registration successful! Welcome to Inventory Tracker.' } 
             });
         } else {
             setErrors({ general: result.error });
+            showError(result.error || 'Registration failed');
         }
         
         setLoading(false);

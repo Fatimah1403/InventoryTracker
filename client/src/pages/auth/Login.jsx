@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
+import { showSuccess, showError } from "../../utils/toast";
 import {
     Container,
     Paper,
@@ -55,6 +56,7 @@ const Login = () => {
 
         if (!formData.email || !formData.password) {
             setLocalError('Please fill in all fields');
+            showError('Please fill in all fields');
             setLoading(false);
             return;
         }
@@ -66,6 +68,7 @@ const Login = () => {
         );
 
         if (result.success) {
+            showSuccess('Login successful');
             if (result.data.role === 'admin') {
                 navigate('/');
             } else {
@@ -73,6 +76,8 @@ const Login = () => {
             }
         } else {
             setLocalError(result.error);
+            showError(result.error || 'Login failed');
+
         }
         
         setLoading(false);
