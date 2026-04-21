@@ -237,7 +237,6 @@ const Login = () => {
                             </Typography>
                         </Box>
 
-                        {/* DEMO SECTION REMOVED */}
                     </Box>
                 </Paper>
             </Box>

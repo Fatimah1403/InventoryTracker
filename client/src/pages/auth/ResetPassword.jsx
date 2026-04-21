@@ -101,7 +101,6 @@ const ResetPassword = () => {
             [name]: value
         }));
         
-        // Clear error for this field
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,

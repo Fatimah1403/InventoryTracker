@@ -22,8 +22,8 @@ const generateRefreshToken = (user, jti) => {
 };
 
 // Store refresh token in Redis with expiry
-const storeRefreshToken = async (userId, refreshToken) => {
-    const key = `refresh_token:${userId}`;
+const storeRefreshToken = async (jti, refreshToken) => {
+    const key = `refresh_token:${jti}`;
     const expiry = 7 * 24 * 60 * 60; 
     await redisClient.setEx(key, expiry, refreshToken);
 };
@@ -85,7 +85,7 @@ export const loginUser = async (req, res) => {
     const jti = crypto.randomUUID();
     const refreshToken = generateRefreshToken(user, jti);
 
-    await storeRefreshToken(user._id, refreshToken);
+    await storeRefreshToken(jti, refreshToken);
 
     setRefreshCookie(res, refreshToken);
 
@@ -202,7 +202,6 @@ export const updateProfile = async (req, res) => {
             user.email = email;
         }
 
-        // Update password if provided
         if (currentPassword && newPassword) {
             const isMatch = await user.matchPassword(currentPassword);
             if (!isMatch) {
