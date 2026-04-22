@@ -33,7 +33,7 @@ const setRefreshCookie = (res, token, rememberMe) => {
     res.cookie("refreshToken", token, {
         httpOnly: true,
         secure: isProduction, 
-        sameSite: isProduction ? "strict" : "lax",
+        sameSite: isProduction ? "nome" : "lax",
         path: "/", 
         maxAge: rememberMe 
         ? 7 * 24 * 60 * 60 * 1000
@@ -136,7 +136,7 @@ export const refreshAccessToken = async (req, res) => {
         });
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            res.clearCookie("refreshToken", { path: "/api/auth" });
+            res.clearCookie("refreshToken", { path: "/" });
             return res.status(401).json({ message: "Refresh token expired" });
         }
         console.error("Refresh error:", error);

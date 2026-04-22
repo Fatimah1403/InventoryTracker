@@ -61,7 +61,7 @@ function AddProduct() {
       });
 
       showSuccess('Product added successfully!');
-      setTimeout(() => navigate('/products'), 800);
+      setTimeout(() => navigate('/dashboard/products'), 800);
     } catch (error) {
       console.error(error); 
       showError('Failed to add product.'); 
