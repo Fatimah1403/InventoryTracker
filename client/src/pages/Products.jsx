@@ -343,8 +343,12 @@ function Products() {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((product) => (
                             <TableRow key={product._id} hover>
-                                <TableCell>{product.name}</TableCell>
-                                <TableCell>{product.category}</TableCell>
+                                <TableCell sx={{ minWidth: 180 }}>
+                                    {product.name}
+                                </TableCell>
+                                <TableCell sx={{ minWidth: 140, whiteSpace: 'nowrap' }}>
+                                    {product.category}
+                                </TableCell>
                                 <TableCell align="center">
                                     {hasRole(['admin', 'manager']) ? (
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
