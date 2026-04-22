@@ -62,7 +62,7 @@ function EditProduct() {
         price: parseFloat(formData.price),
       });
       showSuccess('Product updated successfully!');
-      navigate('/dashboard/products');
+      setTimeout(() => navigate('/products'), 800);
     } catch (error) {
       setError('Failed to update product', error);
     }
