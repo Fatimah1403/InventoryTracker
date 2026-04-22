@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { showSuccess, showError } from '../utils/toast';
+import { useAuth } from '../context/useAuth';
+import { Navigate } from 'react-router-dom';
 
 import {
   Box,
@@ -19,6 +21,7 @@ const categories = ['Electronics', 'Furniture', 'Clothing', 'Food', 'Books'];
 
 function AddProduct() {
   const navigate = useNavigate();
+  const { canAccess, loading: authLoading } = useAuth();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -27,13 +30,11 @@ function AddProduct() {
     price: '',
   });
 
-  // Snackbar + Error states
   const [_openSnackbar, setOpenSnackbar] = useState(false);
   const [_snackbarMessage, setSnackbarMessage] = useState('');
   const [_snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [loading, setLoading] = useState(false);
 
-  // Handle form field updates
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -41,7 +42,6 @@ function AddProduct() {
     });
   };
 
-  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -63,12 +63,19 @@ function AddProduct() {
       showSuccess('Product added successfully!');
       setTimeout(() => navigate('/products'), 800);
     } catch (error) {
-      showError('Failed to add product.');
+      console.error(error); 
+      showError('Failed to add product.'); 
 
     } finally {
       setLoading(false);
     }
   };
+  if (authLoading) {
+    return <Typography>Loading...</Typography>;
+  }
+  if (!canAccess(['admin', 'manager'])) {
+    return <Navigate to="/unauthorized" replace/>
+  }
 
   return (
     <Box>
@@ -120,7 +127,7 @@ function AddProduct() {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>/api/products
+            <Grid item xs={12} sm={6}>
 
               <TextField
                 fullWidth

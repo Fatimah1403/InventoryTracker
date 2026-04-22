@@ -48,14 +48,12 @@ const Register = () => {
     const validateForm = () => {
         const newErrors = {};
         
-        // Name validation
         if (!formData.name.trim()) {
             newErrors.name = 'Name is required';
         } else if (formData.name.length < 2) {
             newErrors.name = 'Name must be at least 2 characters';
         }
         
-        // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!formData.email) {
             newErrors.email = 'Email is required';
@@ -63,7 +61,6 @@ const Register = () => {
             newErrors.email = 'Please enter a valid email';
         }
         
-        // Password validation
         if (!formData.password) {
             newErrors.password = 'Password is required';
         } else if (formData.password.length < 8) {
@@ -72,7 +69,6 @@ const Register = () => {
             newErrors.password = 'Password must contain uppercase, lowercase, and number';
         }
         
-        // Confirm password validation
         if (!formData.confirmPassword) {
             newErrors.confirmPassword = 'Please confirm your password';
         } else if (formData.password !== formData.confirmPassword) {
@@ -90,7 +86,6 @@ const Register = () => {
             [name]: value
         }));
         
-        // Clear error for this field when user starts typing
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -113,7 +108,7 @@ const Register = () => {
             name: formData.name,
             email: formData.email,
             password: formData.password,
-            role: formData.role
+            role: 'viewer'
         });
 
         if (result.success) {
@@ -275,7 +270,7 @@ const Register = () => {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    onClick={() => setShowConfirmPassword((prev) => !prev)}
                                                     edge="end"
                                                     disabled={loading}
                                                 >
@@ -287,7 +282,7 @@ const Register = () => {
                                 />
                             </Grid>
                             
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <FormControl fullWidth>
                                     <InputLabel id="role-label">Account Type</InputLabel>
                                     <Select
@@ -320,7 +315,7 @@ const Register = () => {
                                         </MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
 
                         <Button

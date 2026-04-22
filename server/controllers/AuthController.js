@@ -23,7 +23,7 @@ const generateRefreshToken = (user, jti) => {
 
 // Store refresh token in Redis with expiry
 const storeRefreshToken = async (jti, refreshToken) => {
-    const key = `refresh_token:${jti}`;
+    const key = `refresh:${jti}`;
     const expiry = 7 * 24 * 60 * 60; 
     await redisClient.setEx(key, expiry, refreshToken);
 };
@@ -50,10 +50,11 @@ export const registerUser = async (req, res) => {
         if (existing)
             return res.status(400).json({ message: "User already exists" });
 
-        const user = await User.create({ name, email, password, role});
+        const user = await User.create({ name, email, password, role: 'viewer'});
         res.status(201).json({
             message: "Registration successfull",
             user: {
+                _id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
@@ -93,7 +94,7 @@ export const loginUser = async (req, res) => {
         message: "Login successful",
         accessToken,
         user: {
-            id: user._id,
+            _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role

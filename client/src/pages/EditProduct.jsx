@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { showSuccess } from '../utils/toast';
+import { useAuth } from '../context/useAuth';
 
 import {
   Box,
@@ -19,6 +20,8 @@ const categories = ['Electronics', 'Furniture', 'Clothing', 'Food', 'Books'];
 function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { canAccess, loading: authLoading } = useAuth();
+
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -72,7 +75,13 @@ function EditProduct() {
     });
   };
 
+  if (authLoading) return <Typography>Loading...</Typography>;
+
+  if (!canAccess(['admin', 'manager'])) {
+    return <Navigate to="/unauthorized" replace />;
+  }
   if (loading) return <Typography>Loading...</Typography>;
+  
 
   return (
     <Box>

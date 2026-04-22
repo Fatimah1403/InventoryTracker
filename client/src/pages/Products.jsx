@@ -1,5 +1,6 @@
 // frontend/src/pages/Products.jsx
 import React, { useState, useEffect } from 'react';
+import RoleBasedComponent from '../components/Auth/RoleBasedComponent';
 import {
     Box,
     Paper,
@@ -127,7 +128,6 @@ function Products() {
             const oldQuantity = product.quantity;
             await productAPI.updateQuantity(id, newQuantity);
             
-            // Check if product is now out of stock
             if (oldQuantity > 0 && newQuantity === 0) {
                 // Send out-of-stock notification
                 try {
@@ -270,7 +270,7 @@ function Products() {
                         Print
                     </Button>
                     
-                    {hasRole(['admin', 'manager']) && (
+                    {/* {hasRole(['admin', 'manager']) && (
                         <Button
                             variant="contained"
                             startIcon={<Add />}
@@ -279,7 +279,29 @@ function Products() {
                         >
                             Add Product
                         </Button>
-                    )}
+                    )} */}
+                    <RoleBasedComponent
+                        allowedRoles={['admin', 'manager']}
+                        fallback={
+                            <Button
+                                variant="contained"
+                                startIcon={<Add />}
+                                disabled
+                                sx={{ backgroundColor: '#4A6B7C' }}
+                            >
+                                Add Product (Manager/Admin only)
+                            </Button>
+                        }
+                    >
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={() => navigate('/dashboard/products/add')}
+                            sx={{ backgroundColor: '#4A6B7C' }}
+                        >
+                            Add Product
+                        </Button>
+                    </RoleBasedComponent>
                 </Box>
             </Box>
 
@@ -319,12 +341,18 @@ function Products() {
                             <TableCell align="right"><strong>Price</strong></TableCell>
                             <TableCell align="center"><strong>Status</strong></TableCell>
                             <TableCell align="center"><strong>Total Value</strong></TableCell>
-                            {hasRole(['admin', 'manager']) && (
+                            {/* {hasRole(['admin', 'manager']) && (
                                 <TableCell align="center" className="no-print"><strong>Quick Stock</strong></TableCell>
                             )}
                             {hasRole(['admin', 'manager']) && (
                                 <TableCell align="center" className="no-print"><strong>Actions</strong></TableCell>
-                            )}
+                            )} */}
+                            <TableCell align="center" className="no-print">
+                                <strong>Quick Stock</strong>
+                            </TableCell>
+                            <TableCell align="center" className="no-print">
+                                <strong>Actions</strong>
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -385,7 +413,7 @@ function Products() {
                                 <TableCell align="center">
                                     ${((product.quantity || 0) * (product.price || 0)).toFixed(2)}
                                 </TableCell>
-                                {hasRole(['admin', 'manager']) && (
+                                {/* {hasRole(['admin', 'manager']) && (
                                     <TableCell align="center" className="no-print">
                                         <Tooltip title="Quick restock">
                                             <Button
@@ -406,8 +434,46 @@ function Products() {
                                             </Button>
                                         </Tooltip>
                                     </TableCell>
-                                )}
-                                {hasRole(['admin', 'manager']) && (
+                                )} */}
+                                <TableCell align="center" className="no-print">
+                                    <RoleBasedComponent
+                                        allowedRoles={['admin', 'manager']}
+                                        fallback={
+                                            <Tooltip title="Manager/Admin only">
+                                                <span>
+                                                    <Button
+                                                        type="button"
+                                                        size="small"
+                                                        variant="outlined"
+                                                        disabled
+                                                    >
+                                                        +10
+                                                    </Button>
+                                                </span>
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <Tooltip title="Quick restock">
+                                            <Button
+                                                type='button'
+                                                size="small"
+                                                variant="outlined"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleQuantityUpdate(
+                                                        product._id,
+                                                        product.quantity + 10,
+                                                        product
+                                                    );
+                                                }}
+                                            >
+                                                +10
+                                            </Button>
+                                        </Tooltip>
+                                    </RoleBasedComponent>
+                                </TableCell>
+                                {/* {hasRole(['admin', 'manager']) && (
                                     <TableCell align="center" className="no-print">
                                         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
                                             <IconButton
@@ -428,7 +494,52 @@ function Products() {
                                             )}
                                         </Box>
                                     </TableCell>
-                                )}
+                                )} */}
+                                <TableCell align="center" className="no-print">
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                                        <RoleBasedComponent
+                                            allowedRoles={['admin', 'manager']}
+                                            fallback={
+                                                <Tooltip title="Manager/Admin only">
+                                                    <span>
+                                                        <IconButton color="primary" size="small" disabled>
+                                                            <Edit />
+                                                        </IconButton>
+                                                    </span>
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => navigate(`/dashboard/products/edit/${product._id}`)}
+                                                size="small"
+                                            >
+                                                <Edit />
+                                            </IconButton>
+                                        </RoleBasedComponent>
+
+                                        <RoleBasedComponent
+                                            allowedRoles={['admin']}
+                                            fallback={
+                                                <Tooltip title="Admin only">
+                                                    <span>
+                                                        <IconButton color="error" size="small" disabled>
+                                                            <Delete />
+                                                        </IconButton>
+                                                    </span>
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <IconButton
+                                                color="error"
+                                                onClick={() => handleDelete(product._id, product.name)}
+                                                size="small"
+                                            >
+                                                <Delete />
+                                            </IconButton>
+                                        </RoleBasedComponent>
+                                    </Box>
+                                </TableCell>
                             </TableRow>
                         ))}
                         
