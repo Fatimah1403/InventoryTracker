@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
 import {
     Container,
@@ -20,7 +20,7 @@ import {
 
 const ForgotPassword = () => {
     const { forgotPassword } = useAuth();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
@@ -50,34 +50,18 @@ const ForgotPassword = () => {
         setLoading(true);
         
         const result = await forgotPassword(email);
-        
+
         if (result.success) {
+            const msg = result.data?.message || 'Password reset link has been sent to your email. Please check your inbox.';
             setEmailSent(true);
-            setMessage('Password reset link has been sent to your email. Please check your inbox.');
+            setMessage(msg);
         } else {
-            setError(result.error || 'Failed to send reset email. Please try again.');
+            const msg = result.error || 'Failed to send reset email. Please try again.';
+            setError(msg);
         }
-        
+
         setLoading(false);
-
-        if (result.error?.includes("Too many requests")) {
-            setError("Too many attempts. Please wait before trying again.");
-            return;
-        }
-
-        if (result.error?.includes("User not found")) {
-            setMessage("If this email is registered, we will send a reset link.");
-            setEmailSent(true);
-            return;
-        }
-        if (result.error?.includes("expired")) {
-            navigate('/forgot-password', { 
-                state: { message: 'Your reset link expired. Request a new one.' } 
-            });
-        }
-        
-        
-        
+            
         
     };
 
