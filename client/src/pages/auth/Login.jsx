@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
 import { showSuccess, showError } from "../../utils/toast";
@@ -38,7 +38,15 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [localError, setLocalError] = useState('');
 
+    useEffect(() => {
+        if (localError) {
+          const timer = setTimeout(() => setLocalError(''), 3000);
+          return () => clearTimeout(timer);
+        }
+      }, [localError]);
+
     const from = location.state?.from?.pathname || '/';
+    
 
     const handleChange = (e) => {
         const { name, value, checked } = e.target;

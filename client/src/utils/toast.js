@@ -21,7 +21,7 @@ export const showSuccess = (message) => {
 // Error notification
 export const showError = (message) => {
   toast.error(message, {
-    duration: 50000,
+    duration: 3000,
     style: {
       border: '1px solid #F44336',
       padding: '12px',

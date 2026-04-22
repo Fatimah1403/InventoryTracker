@@ -58,7 +58,7 @@ function App() {
           horizontal: 'right',
         }}
       >
-            <Toaster position="top-right" />
+            <Toaster position="top-right" reverseOrder={false}/>
 
         
           <AuthProvider>

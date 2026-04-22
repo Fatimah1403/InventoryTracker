@@ -6,7 +6,6 @@ import { setAccessToken } from '../services/api';
 
 
 const AuthContext = createContext({});
-let _accessToken = null; 
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true; 
@@ -15,7 +14,7 @@ axios.defaults.withCredentials = true;
 axios.interceptors.response.use(
     (res) => res,
     async (err) => {
-      const original = err.config;
+      const original = err.config || {};
 
       if (original.url.includes("/api/auth/refresh")) {
         console.warn("Refresh request failed.");
@@ -55,7 +54,11 @@ axios.interceptors.response.use(
     const login = async (email, password, rememberMe = false) => {
         try {
             setError(null)
-            const res = await axios.post("/api/auth/login", { email, password, rememberMe });
+            const res = await axios.post(
+                "/api/auth/login", 
+                { email, password, rememberMe: !!rememberMe },
+                { withCredentials: true }
+            );
             const { accessToken, user: userData } = res.data;
 
 

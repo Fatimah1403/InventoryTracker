@@ -33,7 +33,7 @@ const setRefreshCookie = (res, token, rememberMe) => {
     res.cookie("refreshToken", token, {
         httpOnly: true,
         secure: isProduction, 
-        sameSite: isProduction ? "nome" : "lax",
+        sameSite: "lax",
         path: "/", 
         maxAge: rememberMe 
         ? 7 * 24 * 60 * 60 * 1000
@@ -103,6 +103,7 @@ export const loginUser = async (req, res) => {
         }
     });
     } catch (error) {
+        console.error("Login error:", error);
         res.status(500).json({ message: "Login failed", error: error.message });
         
     }
