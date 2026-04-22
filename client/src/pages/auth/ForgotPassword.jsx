@@ -34,12 +34,9 @@ const ForgotPassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Reset messages
         setMessage('');
         setError('');
         
-        // Validate email
         if (!email) {
             setError('Please enter your email address');
             return;
@@ -163,6 +160,7 @@ const ForgotPassword = () => {
                                 onChange={(e) => {
                                     setEmail(e.target.value);
                                     setError('');
+                                    setMessage('');
                                 }}
                                 disabled={loading}
                                 InputProps={{

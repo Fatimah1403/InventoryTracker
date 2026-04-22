@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 // Success notification
 export const showSuccess = (message) => {
   toast.success(message, {
+    duration: 4000,
     style: {
       border: '1px solid #4CAF50',
       padding: '12px',
@@ -20,6 +21,7 @@ export const showSuccess = (message) => {
 // Error notification
 export const showError = (message) => {
   toast.error(message, {
+    duration: 50000,
     style: {
       border: '1px solid #F44336',
       padding: '12px',

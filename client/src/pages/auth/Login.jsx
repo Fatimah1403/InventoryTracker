@@ -55,8 +55,8 @@ const Login = () => {
         setLocalError('');
 
         if (!formData.email || !formData.password) {
-            setLocalError('Please fill in all fields');
-            showError('Please fill in all fields');
+            setLocalError('Please enter both email and password');
+            showError('Please enter both email and password');
             setLoading(false);
             return;
         }
@@ -75,8 +75,9 @@ const Login = () => {
                 navigate(from);
             }
         } else {
-            setLocalError(result.error);
-            showError(result.error || 'Login failed');
+            const msg = result.error || 'Invalid email or password';
+            setLocalError(msg);
+            showError(msg);
 
         }
         

@@ -113,8 +113,8 @@ const Register = () => {
 
         if (result.success) {
             showSuccess('Registration successful!');
-            navigate('/', { 
-                state: { message: 'Registration successful! Welcome to Inventory Tracker.' } 
+            navigate('/login', { 
+                state: { message: 'Registration successful. Please sign in.' } 
             });
         } else {
             setErrors({ general: result.error });
