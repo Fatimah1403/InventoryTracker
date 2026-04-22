@@ -90,7 +90,7 @@ export const loginUser = async (req, res) => {
 
     await storeRefreshToken(jti, refreshToken);
 
-    setRefreshCookie(res, refreshToken);
+    setRefreshCookie(res, refreshToken, rememberMe);
 
     return res.json({
         message: "Login successful",
