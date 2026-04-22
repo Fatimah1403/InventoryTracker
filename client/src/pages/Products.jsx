@@ -67,7 +67,6 @@ function Products() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    // Inject print styles
     useEffect(() => {
         const styleSheet = document.createElement("style");
         styleSheet.innerText = printStyles;
@@ -75,7 +74,6 @@ function Products() {
         return () => document.head.removeChild(styleSheet);
     }, []);
 
-    // Fetch products on mount
     useEffect(() => {
         fetchProducts();
     }, []);

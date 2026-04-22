@@ -53,7 +53,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/password", resetRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-// Basic route for testing
 app.get("/", (req, res) => {
   res.send({ message: "Inventory Management API is running!" });
 });
@@ -66,7 +65,7 @@ app.use((req, res) => {
   });
 });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error(err.stack);
   res.status(500).json({
     success: false,

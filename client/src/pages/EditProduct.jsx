@@ -33,25 +33,25 @@ function EditProduct() {
   
  
   useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await productAPI.getOne(id);
+        const product = response.data.data;
+        setFormData({
+          name: product.name,
+          category: product.category,
+          quantity: product.quantity,
+          price: product.price,
+        });
+        setLoading(false);
+      } catch {
+        setError('Failed to load product');
+        setLoading(false);
+      }
+    };
+  
     fetchProduct();
-  }, [id,]);
-
-  const fetchProduct = async () => {
-    try {
-      const response = await productAPI.getOne(id);
-      const product = response.data.data;
-      setFormData({
-        name: product.name,
-        category: product.category,
-        quantity: product.quantity,
-        price: product.price,
-      });
-      setLoading(false);
-    } catch (error) {
-      setError('Failed to load product', error);
-      setLoading(false);
-    }
-  };
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
