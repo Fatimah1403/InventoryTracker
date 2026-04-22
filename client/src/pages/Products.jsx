@@ -78,7 +78,6 @@ function Products() {
         fetchProducts();
     }, []);
 
-    // Filter products when search term changes
     useEffect(() => {
         const filtered = products.filter(product =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -268,16 +267,7 @@ function Products() {
                         Print
                     </Button>
                     
-                    {/* {hasRole(['admin', 'manager']) && (
-                        <Button
-                            variant="contained"
-                            startIcon={<Add />}
-                            onClick={() => navigate('/dashboard/products/add')}
-                            sx={{ backgroundColor: '#4A6B7C' }}
-                        >
-                            Add Product
-                        </Button>
-                    )} */}
+                    
                     <RoleBasedComponent
                         allowedRoles={['admin', 'manager']}
                         fallback={
@@ -339,12 +329,7 @@ function Products() {
                             <TableCell align="right"><strong>Price</strong></TableCell>
                             <TableCell align="center"><strong>Status</strong></TableCell>
                             <TableCell align="center"><strong>Total Value</strong></TableCell>
-                            {/* {hasRole(['admin', 'manager']) && (
-                                <TableCell align="center" className="no-print"><strong>Quick Stock</strong></TableCell>
-                            )}
-                            {hasRole(['admin', 'manager']) && (
-                                <TableCell align="center" className="no-print"><strong>Actions</strong></TableCell>
-                            )} */}
+                            
                             <TableCell align="center" className="no-print">
                                 <strong>Quick Stock</strong>
                             </TableCell>
@@ -411,28 +396,7 @@ function Products() {
                                 <TableCell align="center">
                                     ${((product.quantity || 0) * (product.price || 0)).toFixed(2)}
                                 </TableCell>
-                                {/* {hasRole(['admin', 'manager']) && (
-                                    <TableCell align="center" className="no-print">
-                                        <Tooltip title="Quick restock">
-                                            <Button
-                                                type='button'
-                                                size="small"
-                                                variant="outlined"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    handleQuantityUpdate(
-                                                        product._id, 
-                                                        product.quantity + 10,
-                                                        product
-                                                    );
-                                                }}
-                                            >
-                                                +10
-                                            </Button>
-                                        </Tooltip>
-                                    </TableCell>
-                                )} */}
+                                
                                 <TableCell align="center" className="no-print">
                                     <RoleBasedComponent
                                         allowedRoles={['admin', 'manager']}
@@ -471,28 +435,7 @@ function Products() {
                                         </Tooltip>
                                     </RoleBasedComponent>
                                 </TableCell>
-                                {/* {hasRole(['admin', 'manager']) && (
-                                    <TableCell align="center" className="no-print">
-                                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                                            <IconButton
-                                                color="primary"
-                                                onClick={() => navigate(`/dashboard/products/edit/${product._id}`)}
-                                                size="small"
-                                            >
-                                                <Edit />
-                                            </IconButton>
-                                            {hasRole('admin') && (
-                                                <IconButton
-                                                    color="error"
-                                                    onClick={() => handleDelete(product._id, product.name)}
-                                                    size="small"
-                                                >
-                                                    <Delete />
-                                                </IconButton>
-                                            )}
-                                        </Box>
-                                    </TableCell>
-                                )} */}
+                                
                                 <TableCell align="center" className="no-print">
                                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
                                         <RoleBasedComponent

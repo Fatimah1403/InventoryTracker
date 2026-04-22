@@ -52,10 +52,10 @@ axios.interceptors.response.use(
     const [_error, setError] = useState(null);
 
     
-    const login = async (email, password) => {
+    const login = async (email, password, rememberMe = false) => {
         try {
             setError(null)
-            const res = await axios.post("/api/auth/login", { email, password });
+            const res = await axios.post("/api/auth/login", { email, password, rememberMe });
             const { accessToken, user: userData } = res.data;
 
 
@@ -63,7 +63,6 @@ axios.interceptors.response.use(
             
             axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
             
-            localStorage.setItem("user", JSON.stringify(userData));
             setUser(userData);
             return { success: true, data: userData };
 
@@ -94,7 +93,6 @@ axios.interceptors.response.use(
         setAccessToken(null);
         delete axios.defaults.headers.common["Authorization"];
 
-        localStorage.removeItem("user");
         setUser(null);
         navigate("/login");
 
@@ -133,7 +131,6 @@ axios.interceptors.response.use(
             const updatedUser = response.data.user;
             
             setUser(updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser));
             
             return { success: true, data: updatedUser };
         } catch (err) {
@@ -155,67 +152,32 @@ axios.interceptors.response.use(
     };
 
    
-    // const checkAuth = async () => {
-    //     const savedUser = localStorage.getItem("user");
-    //     if (!savedUser) {
-    //       setLoading(false);
-    //       return;
-    //     }
     
-    //     try {
-    //         const refreshed = await axios.post("/api/auth/refresh", {}, { 
-    //             withCredentials: true 
-    //         });
-            
-    //         const { accessToken } = refreshed.data;
-            
-    //         setAccessToken(accessToken);
-    //         axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-            
-    //         setUser(JSON.parse(savedUser));
-    //     } catch (error) {
-    //         console.error('Auth check failed:', error);
-    //         localStorage.removeItem("user");
-    //         setUser(null);
-    //     }
-    
-    //     setLoading(false);
-    //   };
     const checkAuth = async () => {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-        setLoading(false);
-    };
+        try {
+            const refreshed = await axios.post("/api/auth/refresh", {}, {
+                withCredentials: true
+            });
     
+            const { accessToken } = refreshed.data;
+    
+            setAccessToken(accessToken);
+            axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    
+            const verifyRes = await axios.get("/api/auth/verify");
+            setUser(verifyRes.data.user || null);
+        } catch  {
+            setAccessToken(null);
+            delete axios.defaults.headers.common["Authorization"];
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
     
       useEffect(() => {
         checkAuth();
       }, []);
-
-    //   useEffect(() => {
-    //     if (!user) return;
-
-    //     const refreshInterval = setInterval(async () => {
-    //         try {
-    //             const refreshed = await axios.post("/api/auth/refresh", {}, { 
-    //                 withCredentials: true 
-    //             });
-                
-    //             const { accessToken } = refreshed.data;
-    //             setAccessToken(accessToken);
-    //             axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-                
-    //             console.log('Token refreshed successfully');
-    //         } catch (error) {
-    //             console.error('Auto-refresh failed:', error);
-    //             logout();
-    //         }
-    //     }, 14 * 60 * 1000); 
-
-    //     return () => clearInterval(refreshInterval);
-    // }, [user]);
     
     
     const value = {

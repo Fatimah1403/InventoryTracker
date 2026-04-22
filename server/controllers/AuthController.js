@@ -27,7 +27,7 @@ const storeRefreshToken = async (jti, refreshToken) => {
     const expiry = 7 * 24 * 60 * 60; 
     await redisClient.setEx(key, expiry, refreshToken);
 };
-const setRefreshCookie = (res, token) => {
+const setRefreshCookie = (res, token, rememberMe) => {
     const isProduction = process.env.NODE_ENV === 'production';
     
     res.cookie("refreshToken", token, {
@@ -35,7 +35,9 @@ const setRefreshCookie = (res, token) => {
         secure: isProduction, 
         sameSite: isProduction ? "strict" : "lax",
         path: "/", 
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: rememberMe 
+        ? 7 * 24 * 60 * 60 * 1000
+        : 24 * 60 * 60 * 1000
     });
 };
 
@@ -68,7 +70,7 @@ export const registerUser = async (req, res) => {
 // POST /api/auth/login
 export const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, rememberMe } = req.body;
         if (!email || !password)
             return res.status(400).json({ message: "Email and password required" });
 
