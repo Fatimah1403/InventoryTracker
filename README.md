@@ -38,7 +38,7 @@ A secure full-stack inventory management system built with React, Node.js, Expre
 
 - Node.js 18 LTS, Express.js 4.x, MongoDB Atlas
 - JWT (jsonwebtoken ^9.0.2), Bcrypt (^5.1.1)
-- Redis Session Management, Nodemailer
+- Redis(Session Management, and token handling) , Nodemailer
 
 ### Frontend
 
@@ -121,7 +121,7 @@ All API endpoints require JWT authentication except login/register.
 | DELETE | /api/products/:id | Yes           | Admin    |
 
 
-## Contact
+## Author
 
 **Fatimah Hassan** 
 GitHub: https://github.com/Fatimah1403

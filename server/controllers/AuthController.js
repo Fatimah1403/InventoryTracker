@@ -3,6 +3,7 @@ import User from "../models/UserModel.js"
 import crypto from "crypto";
 import redisClient from "../config/redisClient.js"; 
 
+const isProduction = process.env.NODE_ENV === 'production';
 
 
 const generateAccessToken = (user) => {
@@ -33,7 +34,7 @@ const setRefreshCookie = (res, token, rememberMe) => {
     res.cookie("refreshToken", token, {
         httpOnly: true,
         secure: isProduction, 
-        sameSite: "lax",
+        sameSite: isProduction ? "none" : "lax",
         path: "/", 
         maxAge: rememberMe 
         ? 7 * 24 * 60 * 60 * 1000
@@ -137,7 +138,12 @@ export const refreshAccessToken = async (req, res) => {
         });
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            res.clearCookie("refreshToken", { path: "/" });
+            res.clearCookie("refreshToken", {
+                path: "/",
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax"
+            });
             return res.status(401).json({ message: "Refresh token expired" });
         }
         console.error("Refresh error:", error);
@@ -152,7 +158,12 @@ export const logoutUser = async (req, res) => {
             await redisClient.del(`refresh:${payload.jti}`);
         }
 
-        res.clearCookie("refreshToken", { path: "/" });
+        res.clearCookie("refreshToken", {
+            path: "/",
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax"
+        });
         return res.json({ message: "Logged out" });
 
     } catch {
