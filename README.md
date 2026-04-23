@@ -9,6 +9,17 @@
 - **Frontend**: [https://inventory-tracker-frontend-ten.vercel.app](https://inventory-tracker-frontend-ten.vercel.app)
 - **Backend API**: [https://inventory-tracker-kuou.onrender.com](https://inventory-tracker-kuou.onrender.com)
 
+
+##  Video Demo
+
+<div>
+    <a href="https://www.loom.com/share/742ce2ebc13748479bdf61d87e98b370">
+    </a>
+    <a href="https://www.loom.com/share/742ce2ebc13748479bdf61d87e98b370">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/742ce2ebc13748479bdf61d87e98b370-1c96be29e1c0fe11-full-play.gif#t=0.1">
+    </a>
+  </div>
+
 ## Project Overview
 
 A secure full-stack inventory management system built with React, Node.js, Express, MongoDB, and Redis. The platform enables product tracking, role-based access control, and automated security validation using a DevSecOps pipeline.
